@@ -1,0 +1,608 @@
+/* ==========================================================================
+   MENU DATA SYSTEM
+   ========================================================================== */
+const MENU_DATA = [
+    // --- BURGERS ---
+    {
+        id: 'classic_cheeseburger',
+        name: 'Wow Classic Cheeseburger',
+        category: 'burgers',
+        price: '240 ETB',
+        image: 'assets/classic_burger.png',
+        badge: 'Bestseller',
+        badgeClass: 'default-badge',
+        desc: 'Our signature flame-grilled beef patty, double cheddar cheese, fresh lettuce, tomato, sliced pickles, and secret Wow sauce on a toasted brioche bun.',
+        ingredients: ['Beef Patty', 'Cheddar Cheese', 'Brioche Bun', 'Lettuce', 'Tomato Slice', 'Pickle Slices', 'Wow Sauce'],
+        cravings: ['cheesy', 'fresh'],
+        allergens: 'Gluten, Dairy',
+        nutrition: { calories: 650, protein: '38g', carbs: '42g', fat: '35g' }
+    },
+    {
+        id: 'crispy_chicken_burger',
+        name: 'Wow Crispy Chicken',
+        category: 'burgers',
+        price: '260 ETB',
+        image: 'assets/chicken_burger.png',
+        badge: 'Spicy / New',
+        badgeClass: 'hot-badge',
+        desc: 'Buttermilk-marinated crispy fried chicken breast, spicy cajun mayo, dill pickles, and crunchy shredded lettuce on a toasted sesame bun.',
+        ingredients: ['Crispy Chicken', 'Sesame Bun', 'Cajun Mayo', 'Pickles', 'Lettuce'],
+        cravings: ['spicy'],
+        allergens: 'Gluten, Dairy, Eggs',
+        nutrition: { calories: 580, protein: '32g', carbs: '48g', fat: '28g' }
+    },
+    {
+        id: 'bbq_bacon_burger',
+        name: 'Wow Smoky BBQ Bacon',
+        category: 'burgers',
+        price: '290 ETB',
+        image: 'assets/classic_burger.png',
+        badge: 'Popular',
+        badgeClass: 'default-badge',
+        desc: 'Flame-grilled double beef patty, crispy smoked beef bacon, caramelized onions, melted cheddar cheese, and rich smoky BBQ sauce.',
+        ingredients: ['Double Beef Patty', 'Cheddar Cheese', 'Beef Bacon', 'Caramelized Onions', 'BBQ Sauce', 'Brioche Bun'],
+        cravings: ['cheesy'],
+        allergens: 'Gluten, Dairy',
+        nutrition: { calories: 780, protein: '46g', carbs: '45g', fat: '44g' }
+    },
+    {
+        id: 'garden_veggie_burger',
+        name: 'Wow Garden Veggie',
+        category: 'burgers',
+        price: '210 ETB',
+        image: 'assets/classic_burger.png',
+        badge: 'Vegetarian',
+        badgeClass: 'veg-badge',
+        desc: 'Grilled giant portobello mushroom, griddled halloumi cheese, roasted sweet peppers, wild arugula, and garlic herb pesto mayo.',
+        ingredients: ['Portobello Mushroom', 'Halloumi Cheese', 'Roasted Peppers', 'Arugula', 'Pesto Mayo', 'Gluten-Free Bun'],
+        cravings: ['fresh', 'cheesy'],
+        allergens: 'Dairy, Nuts',
+        nutrition: { calories: 420, protein: '18g', carbs: '36g', fat: '22g' }
+    },
+
+    // --- SIDES ---
+    {
+        id: 'loaded_fries',
+        name: 'Wow Loaded Fries',
+        category: 'sides',
+        price: '160 ETB',
+        image: 'assets/loaded_fries.png',
+        badge: 'Bestseller',
+        badgeClass: 'default-badge',
+        desc: 'Crispy golden French fries loaded with warm liquid cheddar, smoked beef bacon bits, fresh chives, and a drizzle of spicy chipotle mayonnaise.',
+        ingredients: ['French Fries', 'Liquid Cheddar', 'Bacon Bits', 'Chives', 'Chipotle Mayo'],
+        cravings: ['cheesy', 'spicy'],
+        allergens: 'Dairy, Eggs',
+        nutrition: { calories: 520, protein: '12g', carbs: '58g', fat: '28g' }
+    },
+    {
+        id: 'cajun_fries',
+        name: 'Wow Cajun Fries',
+        category: 'sides',
+        price: '100 ETB',
+        image: 'assets/loaded_fries.png',
+        badge: 'Spicy',
+        badgeClass: 'hot-badge',
+        desc: 'Skin-on hand-cut crispy fries tossed generously in our secret cajun spice blend. Served hot with ketchup.',
+        ingredients: ['French Fries', 'Cajun Spice Dust', 'Organic Ketchup'],
+        cravings: ['spicy'],
+        allergens: 'None',
+        nutrition: { calories: 280, protein: '3g', carbs: '42g', fat: '11g' }
+    },
+    {
+        id: 'onion_rings',
+        name: 'Wow Golden Onion Rings',
+        category: 'sides',
+        price: '110 ETB',
+        image: 'assets/loaded_fries.png',
+        badge: 'Crunchy',
+        badgeClass: 'promo-badge',
+        desc: 'Thick-cut sweet white onions double-dipped in a craft beer batter and fried to golden, crunchy perfection.',
+        ingredients: ['Sweet Onions', 'Beer Batter', 'Garlic Aioli Dip'],
+        cravings: ['fresh'],
+        allergens: 'Gluten',
+        nutrition: { calories: 310, protein: '4g', carbs: '38g', fat: '15g' }
+    },
+
+    // --- SHAKES & DESSERTS ---
+    {
+        id: 'chocolate_shake',
+        name: 'Wow Chocolate Shake',
+        category: 'shakes',
+        price: '150 ETB',
+        image: 'assets/chocolate_shake.png',
+        badge: 'Chef Choice',
+        badgeClass: 'promo-badge',
+        desc: 'Creamy premium cocoa shake topped with fresh whipped cream, dark chocolate shavings, chocolate fudge drizzle, and a cherry.',
+        ingredients: ['Vanilla Ice Cream', 'Cocoa Powder', 'Whole Milk', 'Whipped Cream', 'Chocolate Syrup', 'Cherry'],
+        cravings: ['sweet'],
+        allergens: 'Dairy',
+        nutrition: { calories: 620, protein: '8g', carbs: '85g', fat: '24g' }
+    },
+    {
+        id: 'strawberry_shake',
+        name: 'Wow Strawberry Bliss',
+        category: 'shakes',
+        price: '140 ETB',
+        image: 'assets/chocolate_shake.png',
+        badge: 'Fruit Fresh',
+        badgeClass: 'veg-badge',
+        desc: 'Creamy shake blended with fresh strawberries and sweet vanilla ice cream, topped with whipped cream and strawberry coulis.',
+        ingredients: ['Fresh Strawberries', 'Vanilla Ice Cream', 'Milk', 'Whipped Cream', 'Strawberry Sauce'],
+        cravings: ['sweet', 'fresh'],
+        allergens: 'Dairy',
+        nutrition: { calories: 540, protein: '7g', carbs: '78g', fat: '20g' }
+    },
+    {
+        id: 'brownie_sundae',
+        name: 'Wow Brownie Sundae',
+        category: 'shakes',
+        price: '170 ETB',
+        image: 'assets/chocolate_shake.png',
+        badge: 'New',
+        badgeClass: 'hot-badge',
+        desc: 'A warm fudgy chocolate brownie topped with a scoop of Madagascar vanilla bean ice cream, hot chocolate fudge, and crushed walnuts.',
+        ingredients: ['Chocolate Brownie', 'Vanilla Ice cream', 'Fudge Drizzle', 'Walnuts'],
+        cravings: ['sweet', 'cheesy'],
+        allergens: 'Gluten, Dairy, Nuts',
+        nutrition: { calories: 680, protein: '9g', carbs: '92g', fat: '32g' }
+    },
+
+    // --- DRINKS ---
+    {
+        id: 'ginger_lemonade',
+        name: 'Wow Ginger Lemonade',
+        category: 'drinks',
+        price: '90 ETB',
+        image: 'assets/chocolate_shake.png',
+        badge: 'Refreshing',
+        badgeClass: 'veg-badge',
+        desc: 'Freshly squeezed lemons infused with organic Ethiopian ginger root extract, lightly sweetened with honey and topped with sparkling water.',
+        ingredients: ['Lemons', 'Fresh Ginger', 'Ethiopian Honey', 'Mint Leaves', 'Sparkling Water'],
+        cravings: ['fresh'],
+        allergens: 'None',
+        nutrition: { calories: 120, protein: '0g', carbs: '30g', fat: '0g' }
+    },
+    {
+        id: 'hibiscus_tea',
+        name: 'Wow Iced Hibiscus',
+        category: 'drinks',
+        price: '80 ETB',
+        image: 'assets/chocolate_shake.png',
+        badge: 'Clean Brew',
+        badgeClass: 'default-badge',
+        desc: 'Cold-brewed organic hibiscus calyces, sweetened with raw cane sugar and a hint of garden mint. Served over crushed ice.',
+        ingredients: ['Hibiscus Tea', 'Cane Sugar', 'Fresh Mint', 'Ice'],
+        cravings: ['fresh'],
+        allergens: 'None',
+        nutrition: { calories: 95, protein: '0g', carbs: '24g', fat: '0g' }
+    }
+];
+
+/* ==========================================================================
+   APP STATE & SELECTORS
+   ========================================================================== */
+let activeCategory = 'all';
+let activeCraving = 'all';
+let searchQuery = '';
+let selectedItem = null;
+let currentEstimatedCalories = 0;
+
+// DOM Elements
+const menuGrid = document.getElementById('menu-grid');
+const emptyState = document.getElementById('empty-state');
+const resultsCount = document.getElementById('results-count');
+const searchInput = document.getElementById('menu-search');
+const clearSearchBtn = document.getElementById('clear-search');
+const categoryBar = document.getElementById('category-bar');
+const cravingButtons = document.querySelectorAll('.craving-btn');
+const activeCategoryTitle = document.getElementById('active-category-title');
+const themeToggle = document.getElementById('theme-toggle');
+const resetFiltersBtn = document.getElementById('reset-filters');
+
+// Modal Elements
+const itemModal = document.getElementById('item-modal');
+const modalClose = document.getElementById('modal-close');
+const modalItemImage = document.getElementById('modal-item-image');
+const modalItemBadge = document.getElementById('modal-item-badge');
+const modalItemCategory = document.getElementById('modal-item-category');
+const modalItemName = document.getElementById('modal-item-name');
+const modalItemPrice = document.getElementById('modal-item-price');
+const modalItemDescription = document.getElementById('modal-item-description');
+const modalItemIngredients = document.getElementById('modal-item-ingredients');
+const modalItemCustomizer = document.getElementById('modal-item-customizer');
+const modalItemAllergens = document.getElementById('modal-item-allergens');
+const shareItemBtn = document.getElementById('share-item-btn');
+const toastNotification = document.getElementById('toast');
+
+// Nutrition Modal Elements
+const nutrCalories = document.getElementById('nutrition-calories');
+const nutrProtein = document.getElementById('nutrition-protein');
+const nutrCarbs = document.getElementById('nutrition-carbs');
+const nutrFat = document.getElementById('nutrition-fat');
+
+/* ==========================================================================
+   THEME MANAGER
+   ========================================================================== */
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    if (savedTheme === 'light') {
+        document.documentElement.classList.remove('dark-theme');
+        document.documentElement.classList.add('light-theme');
+        if (themeToggle) themeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+    } else {
+        document.documentElement.classList.add('dark-theme');
+        document.documentElement.classList.remove('light-theme');
+        if (themeToggle) themeToggle.innerHTML = '<i class="fa-solid fa-moon"></i>';
+    }
+}
+
+if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.contains('dark-theme');
+        if (isDark) {
+            document.documentElement.classList.remove('dark-theme');
+            document.documentElement.classList.add('light-theme');
+            themeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            localStorage.setItem('theme', 'light');
+        } else {
+            document.documentElement.classList.add('dark-theme');
+            document.documentElement.classList.remove('light-theme');
+            themeToggle.innerHTML = '<i class="fa-solid fa-moon"></i>';
+            localStorage.setItem('theme', 'dark');
+        }
+    });
+}
+
+/* ==========================================================================
+   FILTER & RENDERING ENGINE
+   ========================================================================== */
+function renderMenu() {
+    if (!menuGrid) return;
+
+    const filteredItems = MENU_DATA.filter(item => {
+        const matchesCategory = activeCategory === 'all' || item.category === activeCategory;
+        const matchesCraving = activeCraving === 'all' || item.cravings.includes(activeCraving);
+        const query = searchQuery.toLowerCase().trim();
+        const matchesSearch = query === '' ||
+            item.name.toLowerCase().includes(query) ||
+            item.desc.toLowerCase().includes(query) ||
+            item.ingredients.some(ing => ing.toLowerCase().includes(query));
+
+        return matchesCategory && matchesCraving && matchesSearch;
+    });
+
+    menuGrid.innerHTML = '';
+
+    if (resultsCount) {
+        resultsCount.textContent = `${filteredItems.length} ${filteredItems.length === 1 ? 'item' : 'items'}`;
+    }
+
+    if (activeCategoryTitle) {
+        let displayTitle = 'All Items';
+        if (activeCategory !== 'all') {
+            const catButton = document.querySelector(`.category-pill[data-category="${activeCategory}"]`);
+            displayTitle = catButton ? catButton.textContent.trim().substring(3) : activeCategory;
+        }
+        if (activeCraving !== 'all') {
+            const cravingButton = document.querySelector(`.craving-btn[data-craving="${activeCraving}"]`);
+            displayTitle += ` • Craving ${cravingButton ? cravingButton.textContent.trim().substring(2) : activeCraving}`;
+        }
+        activeCategoryTitle.textContent = displayTitle;
+    }
+
+    if (filteredItems.length === 0) {
+        menuGrid.style.display = 'none';
+        if (emptyState) emptyState.style.display = 'block';
+        return;
+    } else {
+        menuGrid.style.display = 'grid';
+        if (emptyState) emptyState.style.display = 'none';
+    }
+
+    filteredItems.forEach((item, index) => {
+        const card = document.createElement('article');
+        card.className = 'menu-card';
+        card.style.animation = `fadeInUp 0.4s ease forwards ${index * 0.05}s`;
+
+        const allergensHTML = item.allergens !== 'None'
+            ? item.allergens.split(', ').slice(0, 2).map(a => `<span class="allergen-tag">${a}</span>`).join('')
+            : '<span class="allergen-tag">Allergen Free</span>';
+
+        card.innerHTML = `
+            <div class="card-img-container">
+                <span class="item-badge ${item.badgeClass}">${item.badge}</span>
+                <img src="${item.image}" alt="${item.name}" loading="lazy">
+            </div>
+            <div class="card-content">
+                <div class="card-title-row">
+                    <h3>${item.name}</h3>
+                    <span class="card-price">${item.price}</span>
+                </div>
+                <p class="card-desc">${item.desc}</p>
+                <div class="card-ingredients">
+                    Ingredients: ${item.ingredients.join(', ')}
+                </div>
+                <div class="card-footer">
+                    <div class="allergens-list">
+                        ${allergensHTML}
+                    </div>
+                    <button class="card-action-btn" data-id="${item.id}">
+                        Details <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+
+        card.addEventListener('click', (e) => {
+            openItemDetails(item.id);
+        });
+
+        const actionBtn = card.querySelector('.card-action-btn');
+        if (actionBtn) {
+            actionBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openItemDetails(item.id);
+            });
+        }
+
+        menuGrid.appendChild(card);
+    });
+}
+
+/* ==========================================================================
+   MODAL RENDER & INTERACTIONS
+   ========================================================================== */
+function openItemDetails(itemId) {
+    const item = MENU_DATA.find(i => i.id === itemId);
+    if (!item) return;
+
+    selectedItem = item;
+    currentEstimatedCalories = parseInt(item.nutrition.calories) || 0;
+
+    if (modalItemImage) { modalItemImage.src = item.image; modalItemImage.alt = item.name; }
+    if (modalItemBadge) { modalItemBadge.textContent = item.badge; modalItemBadge.className = `item-badge ${item.badgeClass}`; }
+    if (modalItemCategory) modalItemCategory.textContent = item.category;
+    if (modalItemName) modalItemName.textContent = item.name;
+    if (modalItemPrice) modalItemPrice.textContent = item.price;
+    if (modalItemDescription) modalItemDescription.textContent = item.desc;
+
+    if (modalItemAllergens) {
+        if (item.allergens === 'None') {
+            modalItemAllergens.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #4CAF50"></i> Allergen-Safe`;
+            modalItemAllergens.style.backgroundColor = 'rgba(76, 175, 80, 0.08)';
+            modalItemAllergens.style.color = '#4CAF50';
+            modalItemAllergens.style.borderColor = 'rgba(76, 175, 80, 0.3)';
+        } else {
+            modalItemAllergens.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Contains: ${item.allergens}`;
+            modalItemAllergens.style.backgroundColor = 'rgba(255, 193, 7, 0.08)';
+            modalItemAllergens.style.color = 'var(--brand-yellow-dark)';
+            modalItemAllergens.style.borderColor = 'rgba(255, 193, 7, 0.3)';
+        }
+    }
+
+    if (modalItemIngredients) {
+        modalItemIngredients.innerHTML = item.ingredients.map(ing =>
+            `<span class="ingredient-badge"><i class="fa-solid fa-leaf" style="font-size:0.75rem; color:var(--brand-yellow);"></i> ${ing}</span>`
+        ).join('');
+    }
+
+    setupCustomizer(item);
+
+    if (nutrCalories) nutrCalories.textContent = currentEstimatedCalories;
+    if (nutrProtein) nutrProtein.textContent = item.nutrition.protein;
+    if (nutrCarbs) nutrCarbs.textContent = item.nutrition.carbs;
+    if (nutrFat) nutrFat.textContent = item.nutrition.fat;
+
+    if (itemModal) itemModal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    window.history.pushState(null, null, `?item=${item.id}`);
+}
+
+function closeItemDetails() {
+    if (itemModal) itemModal.classList.remove('open');
+    document.body.style.overflow = '';
+    selectedItem = null;
+    window.history.pushState(null, null, window.location.pathname);
+}
+
+function setupCustomizer(item) {
+    if (!modalItemCustomizer) return;
+    modalItemCustomizer.innerHTML = '';
+
+    if (item.category !== 'burgers' && item.category !== 'sides') {
+        modalItemCustomizer.innerHTML = `<p style="font-size:0.85rem; color:var(--text-secondary);">This item comes standard as prepared. No modifications recommended.</p>`;
+        return;
+    }
+
+    item.ingredients.forEach(ing => {
+        const row = document.createElement('div');
+        row.className = 'customizer-row';
+
+        row.innerHTML = `
+            <span class="customizer-name">${ing}</span>
+            <label class="switch-control">
+                <input type="checkbox" checked data-ingredient="${ing}">
+                <span class="switch-slider"></span>
+            </label>
+        `;
+
+        const checkbox = row.querySelector('input');
+        if (checkbox) {
+            checkbox.addEventListener('change', (e) => {
+                adjustCalories(e.target.checked, ing);
+            });
+        }
+        modalItemCustomizer.appendChild(row);
+    });
+}
+
+function adjustCalories(isAdded, ingredientName) {
+    if (!selectedItem || !nutrCalories) return;
+
+    let calAdjustment = 40;
+    const lowerIng = ingredientName.toLowerCase();
+
+    if (lowerIng.includes('patty') || lowerIng.includes('beef') || lowerIng.includes('chicken')) {
+        calAdjustment = 220;
+    } else if (lowerIng.includes('cheese') || lowerIng.includes('halloumi') || lowerIng.includes('cheddar')) {
+        calAdjustment = 85;
+    } else if (lowerIng.includes('sauce') || lowerIng.includes('mayo') || lowerIng.includes('pesto')) {
+        calAdjustment = 60;
+    } else if (lowerIng.includes('bun')) {
+        calAdjustment = 150;
+    } else if (lowerIng.includes('lettuce') || lowerIng.includes('tomato') || lowerIng.includes('onion') || lowerIng.includes('pickle')) {
+        calAdjustment = 10;
+    }
+
+    if (isAdded) {
+        currentEstimatedCalories += calAdjustment;
+    } else {
+        currentEstimatedCalories -= calAdjustment;
+    }
+
+    nutrCalories.textContent = currentEstimatedCalories;
+    nutrCalories.style.transform = 'scale(1.2)';
+    nutrCalories.style.color = 'var(--brand-red)';
+    nutrCalories.style.transition = 'none';
+
+    setTimeout(() => {
+        nutrCalories.style.transform = 'scale(1)';
+        nutrCalories.style.color = 'var(--brand-yellow)';
+        nutrCalories.style.transition = 'all 0.3s ease';
+    }, 150);
+}
+
+/* ==========================================================================
+   SHARE UTILITIES
+   ========================================================================== */
+function copyShareLink() {
+    if (!selectedItem) return;
+
+    const shareUrl = `${window.location.origin}${window.location.pathname}?item=${selectedItem.id}`;
+
+    navigator.clipboard.writeText(shareUrl).then(() => {
+        showToast(`Copied shareable link for ${selectedItem.name}!`);
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+        showToast('Failed to copy share link.');
+    });
+}
+
+function showToast(message) {
+    if (!toastNotification) return;
+    toastNotification.textContent = message;
+    toastNotification.classList.add('show');
+
+    setTimeout(() => {
+        toastNotification.classList.remove('show');
+    }, 2500);
+}
+
+/* ==========================================================================
+   DEEP LINKING CHECK
+   ========================================================================== */
+function checkDeepLinks() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const itemId = urlParams.get('item');
+    if (itemId) {
+        openItemDetails(itemId);
+    }
+}
+
+/* ==========================================================================
+   EVENT LISTENERS Setup
+   ========================================================================== */
+function setupEventListeners() {
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            if (clearSearchBtn) {
+                clearSearchBtn.style.display = searchQuery.trim() !== '' ? 'block' : 'none';
+            }
+            renderMenu();
+        });
+    }
+
+    if (clearSearchBtn && searchInput) {
+        clearSearchBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            searchQuery = '';
+            clearSearchBtn.style.display = 'none';
+            renderMenu();
+            searchInput.focus();
+        });
+    }
+
+    if (categoryBar) {
+        categoryBar.addEventListener('click', (e) => {
+            const pill = e.target.closest('.category-pill');
+            if (!pill) return;
+
+            document.querySelectorAll('.category-pill').forEach(btn => btn.classList.remove('active'));
+            pill.classList.add('active');
+            activeCategory = pill.getAttribute('data-category');
+
+            pill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            renderMenu();
+        });
+    }
+
+    cravingButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            cravingButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeCraving = btn.getAttribute('data-craving');
+            renderMenu();
+        });
+    });
+
+    if (resetFiltersBtn) {
+        resetFiltersBtn.addEventListener('click', () => {
+            if (searchInput) searchInput.value = '';
+            searchQuery = '';
+            if (clearSearchBtn) clearSearchBtn.style.display = 'none';
+
+            document.querySelectorAll('.category-pill').forEach(btn => btn.classList.remove('active'));
+            const defaultCategory = document.querySelector('.category-pill[data-category="all"]');
+            if (defaultCategory) defaultCategory.classList.add('active');
+            activeCategory = 'all';
+
+            cravingButtons.forEach(b => b.classList.remove('active'));
+            const defaultCraving = document.querySelector('.craving-btn[data-craving="all"]');
+            if (defaultCraving) defaultCraving.classList.add('active');
+            activeCraving = 'all';
+
+            renderMenu();
+        });
+    }
+
+    if (modalClose) modalClose.addEventListener('click', closeItemDetails);
+
+    if (itemModal) {
+        itemModal.addEventListener('click', (e) => {
+            if (e.target === itemModal) {
+                closeItemDetails();
+            }
+        });
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && itemModal && itemModal.classList.contains('open')) {
+            closeItemDetails();
+        }
+    });
+
+    if (shareItemBtn) shareItemBtn.addEventListener('click', copyShareLink);
+}
+
+/* ==========================================================================
+   INITIALIZATION
+   ========================================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    setupEventListeners();
+    renderMenu();
+    checkDeepLinks();
+});

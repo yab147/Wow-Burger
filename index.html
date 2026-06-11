@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Wow Burger — Fresh, premium burgers made for every craving. Explore our delicious menu of burgers, fries, drinks, chicken, and desserts. Order now in Addis Ababa!">
+    <meta name="keywords"
+        content="Wow Burger, Ethiopian burger, Addis Ababa burger, fast food Ethiopia, burger delivery, Ethiopian restaurant">
+    <meta name="theme-color" content="#FF6B00">
+    <meta name="color-scheme" content="light dark">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Wow Burger — Fresh Burgers Made for Every Craving</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header class="header" id="header">
+        <div class="header__container">
+            <a href="#" class="header__logo" id="logo-link" data-page="home" aria-label="Wow Burger Home">
+                <span class="header__logo-icon">🍔</span>
+                <span class="header__logo-text">Wow<span class="header__logo-accent">Burger</span></span>
+            </a>
+            <nav class="header__nav" id="main-nav" aria-label="Main Navigation">
+                <button type="button" class="header__nav-link active" data-page="home" id="nav-home">Home</button>
+                <button type="button" class="header__nav-link" data-page="menu" id="nav-menu">Menu</button>
+                <button type="button" class="header__nav-link" data-page="contact" id="nav-contact">Contact</button>
+            </nav>
+            <button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch to dark mode"
+                aria-pressed="false">
+                <span class="theme-toggle__icon theme-toggle__icon--sun">☀</span>
+                <span class="theme-toggle__icon theme-toggle__icon--moon">☾</span>
+            </button>
+            <button class="header__menu-btn" id="menu-toggle" aria-label="Toggle Menu" aria-expanded="false">
+                <span class="header__menu-icon"></span>
+            </button>
+        </div>
+        <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+            <div class="mobile-menu__content">
+                <button type="button" class="mobile-menu__link" data-page="home" id="mobile-nav-home">Home</button>
+                <button type="button" class="mobile-menu__link" data-page="menu" id="mobile-nav-menu">Menu</button>
+                <button type="button" class="mobile-menu__link" data-page="contact"
+                    id="mobile-nav-contact">Contact</button>
+                <button type="button" class="theme-toggle theme-toggle--mobile" data-theme-toggle
+                    aria-label="Switch to dark mode" aria-pressed="false">
+                    <span class="theme-toggle__icon theme-toggle__icon--sun">☀</span>
+                    <span class="theme-toggle__text">Light</span>
+                    <span class="theme-toggle__icon theme-toggle__icon--moon">☾</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content">
+
+        <section class="page page--home active" id="page-home">
+
+            <section class="hero" id="hero-section">
+                <div class="hero__bg-shapes">
+                    <div class="hero__circle hero__circle--1"></div>
+                    <div class="hero__circle hero__circle--2"></div>
+                    <div class="hero__circle hero__circle--3"></div>
+                </div>
+                <div class="hero__container">
+                    <div class="hero__content">
+                        <span class="hero__badge">
+                            <span class="hero__badge-dot"></span>
+                            Now Open in Addis Ababa
+                        </span>
+                        <h1 class="hero__title">
+                            Fresh Burgers<br>
+                            Made for Every<br>
+                            <span class="hero__title-accent">Craving</span>
+                        </h1>
+                        <p class="hero__subtitle">Explore our delicious burgers, fries, drinks, and special meals —
+                            crafted with love and the freshest ingredients.</p>
+                        <div class="hero__actions">
+                            <button class="btn btn--primary btn--lg" id="hero-cta" data-page="menu">
+                                <span>View Menu</span>
+                                <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                            <a href="#popular-section" class="btn btn--outline btn--lg" id="hero-popular-link">
+                                <span>Popular Items</span>
+                            </a>
+                        </div>
+                        <div class="hero__stats">
+                            <div class="hero__stat">
+                                <span class="hero__stat-number">50+</span>
+                                <span class="hero__stat-label">Menu Items</span>
+                            </div>
+                            <div class="hero__stat-divider"></div>
+                            <div class="hero__stat">
+                                <span class="hero__stat-number">4.9</span>
+                                <span class="hero__stat-label">⭐ Rating</span>
+                            </div>
+                            <div class="hero__stat-divider"></div>
+                            <div class="hero__stat">
+                                <span class="hero__stat-number">10K+</span>
+                                <span class="hero__stat-label">Happy Customers</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero__image-wrap">
+                        <div class="hero__image-glow"></div>
+                        <img src="assets/hero_burger.png" alt="Delicious gourmet burger from Wow Burger"
+                            class="hero__image" width="500" height="500" loading="eager">
+                        <div class="hero__image-badge hero__image-badge--top">
+                            <span class="hero__image-badge-icon">🔥</span>
+                            <span>Bestseller</span>
+                        </div>
+                        <div class="hero__image-badge hero__image-badge--bottom">
+                            <span class="hero__image-badge-price">250 ETB</span>
+                            <span>Starting from</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="categories" id="categories-section">
+                <div class="section__container">
+                    <div class="section__header">
+                        <span class="section__label">Explore</span>
+                        <h2 class="section__title">Our Menu Categories</h2>
+                        <p class="section__subtitle">From juicy burgers to refreshing drinks — discover what makes Wow
+                            Burger special.</p>
+                    </div>
+                    <div class="categories__grid">
+                        <button class="category-card" data-category="burgers" id="cat-burgers">
+                            <div class="category-card__icon-wrap">
+                                <span class="category-card__icon">🍔</span>
+                            </div>
+                            <h3 class="category-card__title">Burgers</h3>
+                            <p class="category-card__count">12 items</p>
+                        </button>
+                        <button class="category-card" data-category="fries" id="cat-fries">
+                            <div class="category-card__icon-wrap">
+                                <span class="category-card__icon">🍟</span>
+                            </div>
+                            <h3 class="category-card__title">Fries</h3>
+                            <p class="category-card__count">8 items</p>
+                        </button>
+                        <button class="category-card" data-category="drinks" id="cat-drinks">
+                            <div class="category-card__icon-wrap">
+                                <span class="category-card__icon">🥤</span>
+                            </div>
+                            <h3 class="category-card__title">Drinks</h3>
+                            <p class="category-card__count">15 items</p>
+                        </button>
+                        <button class="category-card" data-category="chicken" id="cat-chicken">
+                            <div class="category-card__icon-wrap">
+                                <span class="category-card__icon">🍗</span>
+                            </div>
+                            <h3 class="category-card__title">Chicken</h3>
+                            <p class="category-card__count">6 items</p>
+                        </button>
+                        <button class="category-card" data-category="desserts" id="cat-desserts">
+                            <div class="category-card__icon-wrap">
+                                <span class="category-card__icon">🍰</span>
+                            </div>
+                            <h3 class="category-card__title">Desserts</h3>
+                            <p class="category-card__count">5 items</p>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="popular" id="popular-section">
+                <div class="section__container">
+                    <div class="section__header">
+                        <span class="section__label">🔥 Trending Now</span>
+                        <h2 class="section__title">Most Popular Items</h2>
+                        <p class="section__subtitle">Our customers' favorites — tried, tested, and absolutely loved.</p>
+                    </div>
+                    <div class="popular__grid" id="popular-grid">
+                    </div>
+                    <div class="popular__cta">
+                        <button class="btn btn--primary btn--lg" id="popular-view-all" data-page="menu">
+                            View Full Menu
+                            <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="promo" id="promo-section">
+                <div class="section__container">
+                    <div class="promo__card">
+                        <div class="promo__content">
+                            <span class="promo__badge">Special Offer</span>
+                            <h2 class="promo__title">Get 20% Off Your First Order!</h2>
+                            <p class="promo__text">Visit us at our Addis Ababa location and enjoy a warm welcome
+                                discount on your very first meal.</p>
+                            <button class="btn btn--white btn--lg" data-page="menu" id="promo-cta">
+                                Order Now
+                                <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="promo__image-wrap">
+                            <img src="assets/hero_burger.png" alt="Special offer burger" class="promo__image"
+                                width="400" height="400" loading="lazy">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </section>
+
+        <section class="page page--menu" id="page-menu">
+            <div class="menu-page">
+                <div class="menu-page__header">
+                    <div class="section__container">
+                        <span class="section__label">Our Menu</span>
+                        <h2 class="section__title">Explore & Enjoy</h2>
+                        <p class="section__subtitle">Browse our full menu — each item is crafted with the finest
+                            ingredients.</p>
+                    </div>
+                </div>
+                <div class="menu-tabs" id="menu-tabs">
+                    <div class="menu-tabs__container">
+                        <button class="menu-tabs__btn active" data-filter="all" id="filter-all">All</button>
+                        <button class="menu-tabs__btn" data-filter="burgers" id="filter-burgers">🍔 Burgers</button>
+                        <button class="menu-tabs__btn" data-filter="fries" id="filter-fries">🍟 Fries</button>
+                        <button class="menu-tabs__btn" data-filter="drinks" id="filter-drinks">🥤 Drinks</button>
+                        <button class="menu-tabs__btn" data-filter="chicken" id="filter-chicken">🍗 Chicken</button>
+                        <button class="menu-tabs__btn" data-filter="desserts" id="filter-desserts">🍰 Desserts</button>
+                    </div>
+                </div>
+                <div class="section__container">
+                    <div class="menu-toolbar">
+                        <div class="menu-toolbar__search">
+                            <input type="search" id="menu-search" placeholder="Search burgers, fries, drinks..."
+                                aria-label="Search menu items">
+                            <button type="button" class="menu-toolbar__clear" id="clear-search" hidden
+                                aria-label="Clear search">×</button>
+                        </div>
+                        <div class="menu-toolbar__meta">
+                            <p class="menu-results" id="results-count">Showing 0 items</p>
+                            <button type="button" class="menu-reset" id="reset-filters">Reset</button>
+                        </div>
+                    </div>
+                    <div class="menu-grid" id="menu-grid"></div>
+                    <div class="menu-empty" id="menu-empty" hidden>No items match this filter yet. Try another search.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="page page--contact" id="page-contact">
+            <div class="contact-page">
+                <div class="section__container">
+                    <div class="section__header">
+                        <span class="section__label">Get In Touch</span>
+                        <h2 class="section__title">We'd Love to Hear From You</h2>
+                        <p class="section__subtitle">Have questions about our orders, catering options, or just want to
+                            say hi?</p>
+                    </div>
+                    <div class="contact__wrapper">
+                        <form class="contact__form" id="contact-form" novalidate>
+                            <div class="form__group">
+                                <label for="contact-name" class="form__label">Full Name</label>
+                                <input type="text" id="contact-name" class="form__input" placeholder="Your Name"
+                                    required>
+                            </div>
+                            <div class="form__group">
+                                <label for="contact-email" class="form__label">Email Address</label>
+                                <input type="email" id="contact-email" class="form__input"
+                                    placeholder="name@example.com" required>
+                            </div>
+                            <div class="form__group">
+                                <label for="contact-message" class="form__label">Message</label>
+                                <textarea id="contact-message" class="form__input form__textarea" rows="5"
+                                    placeholder="How can we help you?" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn--primary btn--lg">Send Message</button>
+                        </form>
+                        <p class="contact__status" id="contact-status" role="status" aria-live="polite"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="page page--detail" id="page-detail">
+            <div class="detail" id="detail-content">
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer" id="footer">
+        <div class="footer__container">
+            <div class="footer__grid">
+                <div class="footer__brand">
+                    <a href="#" class="footer__logo" id="footer-logo-link" data-page="home">
+                        <span class="header__logo-icon">🍔</span>
+                        <span class="header__logo-text">Wow<span class="header__logo-accent">Burger</span></span>
+                    </a>
+                    <p class="footer__desc">Premium burgers crafted with passion and the freshest ingredients — right
+                        here in Addis Ababa, Ethiopia.</p>
+                    <div class="footer__social">
+                        <a href="#" class="footer__social-link" id="social-facebook" aria-label="Facebook">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                            </svg>
+                        </a>
+                        <a href="#" class="footer__social-link" id="social-instagram" aria-label="Instagram">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                            </svg>
+                        </a>
+                        <a href="#" class="footer__social-link" id="social-tiktok" aria-label="TikTok">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 0010.86 4.46V13a8.28 8.28 0 005.58 2.17V11.7a4.84 4.84 0 01-3.77-1.78V6.69h3.77z" />
+                            </svg>
+                        </a>
+                        <a href="#" class="footer__social-link" id="social-telegram" aria-label="Telegram">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0h-.056zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer__col">
+                    <h4 class="footer__col-title">Quick Links</h4>
+                    <button type="button" class="footer__link" data-page="home" id="footer-link-home">Home</button>
+                    <button type="button" class="footer__link" data-page="menu" id="footer-link-menu">Full Menu</button>
+                    <button type="button" class="footer__link" data-page="contact" id="footer-link-contact">Contact
+                        Us</button>
+                    <a href="#" class="footer__link" id="footer-link-careers">Careers</a>
+                </div>
+                <div class="footer__col">
+                    <h4 class="footer__col-title">Contact</h4>
+                    <p class="footer__info">
+                        <svg class="footer__info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                            <circle cx="12" cy="10" r="3" />
+                        </svg>
+                        Bole Road, Addis Ababa, Ethiopia
+                    </p>
+                    <p class="footer__info">
+                        <svg class="footer__info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
+                        </svg>
+                        +251 911 234 567
+                    </p>
+                    <p class="footer__info">
+                        <svg class="footer__info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                        Mon — Sun: 8:00 AM — 11:00 PM
+                    </p>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p>&copy; 2026 Wow Burger. All Rights Reserved.</p>
+                <p class="footer__made">Made with ❤️ in Ethiopia</p>
+            </div>
+        </div>
+    </footer>
+
+    <button class="back-to-top" id="back-to-top" aria-label="Back to top">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M18 15l-6-6-6 6" />
+        </svg>
+    </button>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
