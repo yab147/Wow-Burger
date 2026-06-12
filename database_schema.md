@@ -9,11 +9,11 @@ This document outlines the comprehensive Minimum Viable Product (MVP) database s
 
 ```mermaid
 erDiagram
-    CATEGORIES ||--o{ MENU_ITEMS : "contains"
-    MENU_ITEMS ||--o{ MODIFIERS : "has"
-    MODIFIERS ||--o{ MODIFIER_OPTIONS : "includes"
-    MENU_ITEMS ||--o{ MENU_ITEM_ALLERGENS : "has"
-    ALLERGENS ||--o{ MENU_ITEM_ALLERGENS : "linked_to"
+    CATEGORIES ||--o{ MENU_ITEMS : contains
+    MENU_ITEMS ||--o{ MODIFIERS : has
+    MODIFIERS ||--o{ MODIFIER_OPTIONS : includes
+    MENU_ITEMS ||--o{ MENU_ITEM_ALLERGENS : has
+    ALLERGENS ||--o{ MENU_ITEM_ALLERGENS : linked_to
 
     CATEGORIES {
         varchar id PK
