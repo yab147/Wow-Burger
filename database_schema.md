@@ -1,5 +1,4 @@
-
-# Wow Burger - Digital Menu Database Schema (MVP)
+Markdown# Wow Burger - Digital Menu Database Schema (MVP)
 
 This document outlines the comprehensive Minimum Viable Product (MVP) database schema for the Wow Burger dynamic digital menu. It is designed to be scalable and performant while supporting essential requirements such as menu categorization, complex item pricing, dynamic availability, and item customizations.
 
