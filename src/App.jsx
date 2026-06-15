@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Home, Utensils, Phone, Lock } from 'lucide-react';
 import { initialMenuItems, initialCategories } from './initialData';
 import AdminDashboard from './AdminDashboard';
 
@@ -94,10 +95,23 @@ export default function App() {
         </div>
         <div className={`mobile-menu ${mobileMenuOpen ? 'open' : ''}`}>
           <div className="mobile-menu__content">
-            <button type="button" className="mobile-menu__link" onClick={() => showPage('home')}>Home</button>
-            <button type="button" className="mobile-menu__link" onClick={() => showPage('menu')}>Menu</button>
-            <button type="button" className="mobile-menu__link" onClick={() => showPage('contact')}>Contact</button>
-            <button type="button" className="mobile-menu__link" onClick={() => showPage('admin')}>Admin</button>
+            <button type="button" className={`mobile-menu__link ${page === 'home' ? 'active' : ''}`} onClick={() => showPage('home')}>
+              <div className="mobile-menu__icon-wrap"><Home size={18} /></div>
+              <span>Home</span>
+            </button>
+            <button type="button" className={`mobile-menu__link ${page === 'menu' ? 'active' : ''}`} onClick={() => showPage('menu')}>
+              <div className="mobile-menu__icon-wrap"><Utensils size={18} /></div>
+              <span>Menu</span>
+            </button>
+            <button type="button" className={`mobile-menu__link ${page === 'contact' ? 'active' : ''}`} onClick={() => showPage('contact')}>
+              <div className="mobile-menu__icon-wrap"><Phone size={18} /></div>
+              <span>Contact</span>
+            </button>
+            <div className="mobile-menu__divider"></div>
+            <button type="button" className={`mobile-menu__link ${page === 'admin' ? 'active' : ''}`} onClick={() => showPage('admin')}>
+              <div className="mobile-menu__icon-wrap"><Lock size={18} /></div>
+              <span>Admin</span>
+            </button>
             <button type="button" className="theme-toggle theme-toggle--mobile" onClick={toggleTheme}>
               <span className="theme-toggle__icon theme-toggle__icon--sun">☀</span>
               <span className="theme-toggle__text">{theme === 'dark' ? 'Light' : 'Dark'}</span>
