@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Home, Utensils, Phone, Lock } from 'lucide-react';
+import { Home, Utensils, Phone, Lock, MapPin, Mail, Clock, Send, CheckCircle2 } from 'lucide-react';
 import { initialMenuItems, initialCategories } from './initialData';
 import AdminDashboard from './AdminDashboard';
 
@@ -29,6 +29,7 @@ export default function App() {
   const [isAdminAuth, setIsAdminAuth] = useState(() => getStorage('wow-admin-auth', false));
   const [detailItem, setDetailItem] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [contactSuccess, setContactSuccess] = useState(false);
 
   useEffect(() => { setStorage('wow-menu', menuItems); }, [menuItems]);
   useEffect(() => { setStorage('wow-categories', categories); }, [categories]);
@@ -275,23 +276,62 @@ export default function App() {
                     <div className="section__header">
                         <span className="section__label">Get In Touch</span>
                         <h2 className="section__title">We'd Love to Hear From You</h2>
+                        <p className="section__subtitle">Whether you have a question about our menu, reservations, or anything else, our team is ready to answer all your questions.</p>
                     </div>
+                    
                     <div className="contact__wrapper">
-                        <form className="contact__form" onSubmit={e => { e.preventDefault(); alert('Message sent!'); e.target.reset(); }}>
-                            <div className="form__group">
-                                <label className="form__label">Full Name</label>
-                                <input type="text" className="form__input" required />
-                            </div>
-                            <div className="form__group">
-                                <label className="form__label">Email Address</label>
-                                <input type="email" className="form__input" required />
-                            </div>
-                            <div className="form__group">
-                                <label className="form__label">Message</label>
-                                <textarea className="form__input form__textarea" rows="5" required></textarea>
-                            </div>
-                            <button type="submit" className="btn btn--primary btn--lg">Send Message</button>
-                        </form>
+                        <div className="contact__info">
+                            <h3 className="contact__info-title">Contact Information</h3>
+                            <p className="contact__info-desc">Fill up the form and our team will get back to you within 24 hours.</p>
+                            
+                            <ul className="contact__info-list">
+                                <li className="contact__info-item">
+                                    <div className="contact__info-icon"><Phone size={18} /></div>
+                                    <span>+251 911 234 567</span>
+                                </li>
+                                <li className="contact__info-item">
+                                    <div className="contact__info-icon"><Mail size={18} /></div>
+                                    <span>hello@wowburger.et</span>
+                                </li>
+                                <li className="contact__info-item">
+                                    <div className="contact__info-icon"><MapPin size={18} /></div>
+                                    <span>Bole Road, Addis Ababa</span>
+                                </li>
+                                <li className="contact__info-item">
+                                    <div className="contact__info-icon"><Clock size={18} /></div>
+                                    <span>Mon - Sun: 10:00 AM - 10:00 PM</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div className="contact__form-container">
+                            {contactSuccess ? (
+                                <div className="contact__success">
+                                    <div className="contact__success-icon"><CheckCircle2 size={48} /></div>
+                                    <h3>Message Sent!</h3>
+                                    <p>Thank you for reaching out. We will get back to you shortly.</p>
+                                    <button className="btn btn--outline" onClick={() => setContactSuccess(false)}>Send another message</button>
+                                </div>
+                            ) : (
+                                <form className="contact__form" onSubmit={e => { e.preventDefault(); setContactSuccess(true); e.target.reset(); }}>
+                                    <div className="form__group">
+                                        <label className="form__label">Full Name</label>
+                                        <input type="text" className="form__input" placeholder="e.g. John Doe" required />
+                                    </div>
+                                    <div className="form__group">
+                                        <label className="form__label">Email Address</label>
+                                        <input type="email" className="form__input" placeholder="e.g. john@example.com" required />
+                                    </div>
+                                    <div className="form__group">
+                                        <label className="form__label">Message</label>
+                                        <textarea className="form__input form__textarea" rows="5" placeholder="Write your message here..." required></textarea>
+                                    </div>
+                                    <button type="submit" className="btn btn--primary btn--lg contact__submit-btn">
+                                        <Send size={18} /> Send Message
+                                    </button>
+                                </form>
+                            )}
+                        </div>
                     </div>
                 </div>
              </div>
