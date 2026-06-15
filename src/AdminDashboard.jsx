@@ -124,16 +124,16 @@ export default function AdminDashboard({ menuItems, setMenuItems, categories, se
         {/* Menu Items Tab */}
         {activeTab === 'items' && !editingItem && (
           <div style={{ animation: 'fadeIn 0.3s ease-out' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-              <h2 style={{ fontSize: '2rem', fontWeight: '800' }}>Menu Items</h2>
-              <button className="btn btn--primary" onClick={() => setEditingItem({})} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div className="admin-header">
+              <h2 className="admin-title">Menu Items</h2>
+              <button className="btn btn--primary" onClick={() => setEditingItem({})}>
                 <Plus size={18} /> Add New Item
               </button>
             </div>
 
             <div style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)', overflow: 'hidden' }}>
               <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border)', display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
+                <div style={{ position: 'relative', flex: 1, maxWidth: '100%' }}>
                   <Search size={18} color="var(--text-muted)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
                   <input 
                     type="text" 
@@ -145,14 +145,14 @@ export default function AdminDashboard({ menuItems, setMenuItems, categories, se
                 </div>
               </div>
               
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                  <thead style={{ background: 'var(--surface-soft)', borderBottom: '1px solid var(--border)' }}>
+              <div style={{ overflowX: 'hidden' }}>
+                <table className="admin-table">
+                  <thead>
                     <tr>
-                      <th style={{ padding: '1rem 1.5rem', fontWeight: '600', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>Item</th>
-                      <th style={{ padding: '1rem 1.5rem', fontWeight: '600', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>Category</th>
-                      <th style={{ padding: '1rem 1.5rem', fontWeight: '600', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase' }}>Price</th>
-                      <th style={{ padding: '1rem 1.5rem', fontWeight: '600', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase', textAlign: 'right' }}>Actions</th>
+                      <th>Item</th>
+                      <th>Category</th>
+                      <th>Price</th>
+                      <th style={{ textAlign: 'right' }}>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -161,26 +161,26 @@ export default function AdminDashboard({ menuItems, setMenuItems, categories, se
                         <td colSpan="4" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>No items found.</td>
                       </tr>
                     ) : filteredItems.map(item => (
-                      <tr key={item.id} style={{ borderBottom: '1px solid var(--border-soft)', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-soft)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                        <td style={{ padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <tr key={item.id}>
+                        <td data-label="Item" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                           <img src={item.image_url} alt={item.name} style={{ width: '40px', height: '40px', borderRadius: 'var(--radius-sm)', objectFit: 'cover', background: 'var(--hero-bg)' }} />
                           <div>
-                            <p style={{ fontWeight: '600' }}>{item.name}</p>
+                            <p style={{ fontWeight: '600', color: 'var(--text-strong)' }}>{item.name}</p>
                             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{item.id}</p>
                           </div>
                         </td>
-                        <td style={{ padding: '1rem 1.5rem' }}>
+                        <td data-label="Category">
                           <span style={{ padding: '0.25rem 0.75rem', background: 'var(--orange-tint)', color: 'var(--orange)', borderRadius: 'var(--radius-full)', fontSize: '0.8rem', fontWeight: '600' }}>
                             {categories.find(c => c.id === item.category_id)?.name || 'Unknown'}
                           </span>
                         </td>
-                        <td style={{ padding: '1rem 1.5rem', fontWeight: '600' }}>{item.price} ETB</td>
-                        <td style={{ padding: '1rem 1.5rem', textAlign: 'right' }}>
+                        <td data-label="Price" style={{ fontWeight: '600' }}>{item.price} ETB</td>
+                        <td data-label="Actions" style={{ textAlign: 'right' }}>
                           <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                            <button onClick={() => setEditingItem(item)} style={{ padding: '0.5rem', color: 'var(--text-muted)', borderRadius: 'var(--radius-sm)', transition: '0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-muted)'; e.currentTarget.style.color = 'var(--orange)'; }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-muted)'; }}>
+                            <button onClick={() => setEditingItem(item)} style={{ padding: '0.5rem', color: 'var(--text-muted)', borderRadius: 'var(--radius-sm)', transition: '0.2s', background: 'var(--surface-soft)' }}>
                               <Edit3 size={18} />
                             </button>
-                            <button onClick={() => handleDeleteItem(item.id)} style={{ padding: '0.5rem', color: 'var(--text-muted)', borderRadius: 'var(--radius-sm)', transition: '0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'; e.currentTarget.style.color = '#EF4444'; }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-muted)'; }}>
+                            <button onClick={() => handleDeleteItem(item.id)} style={{ padding: '0.5rem', color: '#EF4444', borderRadius: 'var(--radius-sm)', transition: '0.2s', background: 'rgba(239, 68, 68, 0.1)' }}>
                               <Trash2 size={18} />
                             </button>
                           </div>
