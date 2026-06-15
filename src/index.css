@@ -2148,41 +2148,53 @@ ol {
     border-bottom: 1px solid var(--border);
     display: flex;
     flex-direction: column;
-    padding: 1.5rem;
+    padding: 1rem 0;
 }
 
 .admin-sidebar__header {
-    margin-bottom: 1.5rem;
-    padding-left: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 0 1rem;
 }
 
 .admin-sidebar__nav {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
     gap: 0.5rem;
+    padding: 0 1rem 0.5rem 1rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
     flex: 1;
 }
 
-.admin-nav-btn {
+.admin-sidebar__nav::-webkit-scrollbar {
+    display: none;
+}
+
+.admin-nav-btn, .admin-logout-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    padding: 0.75rem;
-    border-radius: var(--radius-md);
-    background: transparent;
-    color: var(--text-muted);
+    padding: 0.6rem 1.1rem;
+    border-radius: var(--radius-full);
     font-weight: 600;
     transition: var(--transition);
-    flex: 1;
-    min-width: calc(33.33% - 0.5rem);
+    white-space: nowrap;
+    flex-shrink: 0;
     border: 1px solid transparent;
+    font-size: 0.9rem;
+}
+
+.admin-nav-btn {
+    background: var(--surface-soft);
+    color: var(--text-muted);
 }
 
 .admin-nav-btn:hover {
-    background: var(--surface-soft);
     color: var(--text-strong);
+    border-color: var(--border);
 }
 
 .admin-nav-btn.active {
@@ -2192,22 +2204,12 @@ ol {
 }
 
 .admin-logout-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.75rem;
-    border-radius: var(--radius-md);
     color: #EF4444;
-    font-weight: 600;
-    transition: var(--transition);
-    margin-top: 1rem;
     background: rgba(239, 68, 68, 0.1);
-    width: 100%;
 }
 
 .admin-nav-label {
-    display: none;
+    display: inline;
 }
 
 .admin-main {
@@ -2228,24 +2230,32 @@ ol {
     }
     .admin-sidebar__header {
         margin-bottom: 3rem;
-        padding-left: 1rem;
+        padding-left: 0;
+        padding-right: 0;
     }
     .admin-sidebar__nav {
         flex-direction: column;
         flex-wrap: nowrap;
+        padding: 0;
+        overflow-x: visible;
     }
-    .admin-nav-btn {
+    .admin-nav-btn, .admin-logout-btn {
         justify-content: flex-start;
         padding: 0.85rem 1rem;
+        border-radius: var(--radius-md);
+        font-size: 1rem;
+        background: transparent;
     }
-    .admin-nav-label {
-        display: inline;
+    .admin-nav-btn:hover {
+        background: var(--surface-soft);
+        border-color: transparent;
+    }
+    .admin-nav-btn.active {
+        background: var(--orange-tint);
+        border-color: var(--orange);
     }
     .admin-logout-btn {
-        justify-content: flex-start;
-        padding: 0.85rem 1rem;
         margin-top: auto;
-        background: transparent;
     }
     .admin-logout-btn:hover {
         background: rgba(239, 68, 68, 0.1);

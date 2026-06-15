@@ -72,13 +72,12 @@ export default function AdminDashboard({ menuItems, setMenuItems, categories, se
             className={`admin-nav-btn ${activeTab === 'categories' ? 'active' : ''}`}>
             <Tags size={20} /> <span className="admin-nav-label">Categories</span>
           </button>
+          <button 
+            onClick={onLogout}
+            className="admin-logout-btn">
+            <LogOut size={20} /> <span className="admin-nav-label">Sign Out</span>
+          </button>
         </nav>
-
-        <button 
-          onClick={onLogout}
-          className="admin-logout-btn">
-          <LogOut size={20} /> <span className="admin-nav-label">Sign Out</span>
-        </button>
       </aside>
 
       {/* Main Content Area */}

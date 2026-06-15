@@ -345,22 +345,58 @@ export default function App() {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20"><path d="M15 18l-6-6 6-6" /></svg>
                 Back to menu
               </button>
-              <section className="detail__hero" style={{ display: 'flex', gap: '4rem', marginTop: '2rem', flexWrap: 'wrap' }}>
-                <div className="detail__image-wrap" style={{ flex: '1 1 400px' }}>
-                  <img className="detail__image" src={detailItem.image_url} alt={detailItem.name} style={{ width: '100%', borderRadius: 'var(--radius-lg)' }} />
+              <section className="detail__hero">
+                <div className="detail__image-wrap">
+                  <img className="detail__image" src={detailItem.image_url} alt={detailItem.name} />
                 </div>
-                <div className="detail__info" style={{ flex: '1 1 400px' }}>
-                  <p className="detail__category" style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{mapCategoryName(detailItem.category_id)}</p>
-                  <h2 className="detail__name" style={{ fontSize: '2.5rem', margin: '0.5rem 0' }}>{detailItem.name}</h2>
-                  <div className="detail__price" style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--orange)', marginBottom: '1.5rem' }}>{detailItem.price} ETB</div>
-                  <p className="detail__desc" style={{ fontSize: '1.1rem', color: 'var(--text-muted)', lineHeight: '1.8' }}>{detailItem.description}</p>
+                <div className="detail__info">
+                  <p className="detail__category">{mapCategoryName(detailItem.category_id)}</p>
+                  <h2 className="detail__name">{detailItem.name}</h2>
+                  <div className="detail__price">{detailItem.price} ETB</div>
+                  <p className="detail__desc">{detailItem.description}</p>
                   
-                  <h3 style={{ marginTop: '2rem', marginBottom: '1rem' }}>Ingredients</h3>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                    {detailItem.ingredients?.map((ing, i) => (
-                      <span key={i} style={{ background: 'var(--surface-soft)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)' }}>{ing}</span>
-                    ))}
-                  </div>
+                  {detailItem.ingredients && detailItem.ingredients.length > 0 && (
+                    <div className="detail__section">
+                      <h3 className="detail__section-title">Ingredients</h3>
+                      <div className="detail__ingredients">
+                        {detailItem.ingredients.map((ing, i) => (
+                          <span key={i} className="detail__ingredient">{ing}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {detailItem.nutrition && Object.keys(detailItem.nutrition).length > 0 && (
+                    <div className="detail__section">
+                      <h3 className="detail__section-title">Nutritional Information</h3>
+                      <div className="detail__nutrition">
+                        {detailItem.nutrition.calories && (
+                            <div className="detail__nutrition-item">
+                                <span className="detail__nutrition-value">{detailItem.nutrition.calories}</span>
+                                <span className="detail__nutrition-label">Calories</span>
+                            </div>
+                        )}
+                        {detailItem.nutrition.protein && (
+                            <div className="detail__nutrition-item">
+                                <span className="detail__nutrition-value">{detailItem.nutrition.protein}</span>
+                                <span className="detail__nutrition-label">Protein</span>
+                            </div>
+                        )}
+                        {detailItem.nutrition.carbs && (
+                            <div className="detail__nutrition-item">
+                                <span className="detail__nutrition-value">{detailItem.nutrition.carbs}</span>
+                                <span className="detail__nutrition-label">Carbs</span>
+                            </div>
+                        )}
+                        {detailItem.nutrition.fat && (
+                            <div className="detail__nutrition-item">
+                                <span className="detail__nutrition-value">{detailItem.nutrition.fat}</span>
+                                <span className="detail__nutrition-label">Fat</span>
+                            </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </section>
             </div>
