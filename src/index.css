@@ -307,36 +307,54 @@ ol {
 
 /* Mobile Menu */
 .mobile-menu {
-    position: fixed;
-    inset: 0;
-    background: var(--mobile-menu-bg);
-    backdrop-filter: blur(20px);
+    position: absolute;
+    top: calc(100% + 1rem);
+    right: 1.25rem;
+    left: 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
     z-index: 99;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 1.5rem;
     opacity: 0;
     pointer-events: none;
-    transition: opacity var(--transition-speed) ease;
+    transform: translateY(-20px) scale(0.95);
+    transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: top right;
+}
+
+@media (min-width: 480px) {
+    .mobile-menu {
+        left: auto;
+        width: 320px;
+    }
 }
 
 .mobile-menu.open {
     opacity: 1;
     pointer-events: auto;
+    transform: translateY(0) scale(1);
 }
 
 .mobile-menu__content {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 2rem;
+    align-items: stretch;
+    gap: 0.5rem;
 }
 
 .mobile-menu__link {
-    font-size: 1.75rem;
-    font-weight: 700;
+    font-size: 1.1rem;
+    font-weight: 600;
     color: var(--text-strong);
+    padding: 1rem;
+    border-radius: var(--radius-md);
     transition: var(--transition);
+    text-align: left;
+    background: var(--surface-soft);
+    display: flex;
+    align-items: center;
 }
 
 .theme-toggle {
@@ -399,15 +417,17 @@ ol {
 }
 
 .theme-toggle--mobile {
-    width: auto;
-    height: 42px;
-    padding: .35rem .65rem;
-    gap: .4rem;
+    width: 100%;
+    margin-top: 0.5rem;
+    padding: 1rem;
+    justify-content: space-between;
+    border-radius: var(--radius-md);
 }
 
 .mobile-menu__link:hover,
 .mobile-menu__link.active {
     color: var(--orange);
+    background: var(--orange-tint);
 }
 
 @media(min-width:768px) {
