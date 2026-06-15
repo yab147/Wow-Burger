@@ -48,41 +48,41 @@ export default function AdminDashboard({ menuItems, setMenuItems, categories, se
   );
 
   return (
-    <div style={{ display: 'flex', minHeight: 'calc(100vh - var(--header-height))', background: 'var(--surface-soft)' }}>
+    <div className="admin-layout">
       {/* Sidebar */}
-      <aside style={{ width: '280px', background: 'var(--surface)', borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column', padding: '2rem 1.5rem' }}>
-        <div style={{ marginBottom: '3rem', paddingLeft: '1rem' }}>
+      <aside className="admin-sidebar">
+        <div className="admin-sidebar__header">
           <h2 style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--text-strong)', letterSpacing: '0.5px' }}>Admin Workspace</h2>
           <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Manage your digital menu</p>
         </div>
 
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
+        <nav className="admin-sidebar__nav">
           <button 
             onClick={() => { setActiveTab('dashboard'); setEditingItem(null); }}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.85rem 1rem', borderRadius: 'var(--radius-md)', background: activeTab === 'dashboard' ? 'var(--orange-tint)' : 'transparent', color: activeTab === 'dashboard' ? 'var(--orange)' : 'var(--text-muted)', fontWeight: '600', transition: 'var(--transition)', textAlign: 'left' }}>
-            <LayoutDashboard size={20} /> Dashboard Overview
+            className={`admin-nav-btn ${activeTab === 'dashboard' ? 'active' : ''}`}>
+            <LayoutDashboard size={20} /> <span className="admin-nav-label">Dashboard</span>
           </button>
           <button 
             onClick={() => { setActiveTab('items'); setEditingItem(null); }}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.85rem 1rem', borderRadius: 'var(--radius-md)', background: activeTab === 'items' ? 'var(--orange-tint)' : 'transparent', color: activeTab === 'items' ? 'var(--orange)' : 'var(--text-muted)', fontWeight: '600', transition: 'var(--transition)', textAlign: 'left' }}>
-            <Utensils size={20} /> Menu Items
+            className={`admin-nav-btn ${activeTab === 'items' ? 'active' : ''}`}>
+            <Utensils size={20} /> <span className="admin-nav-label">Menu Items</span>
           </button>
           <button 
             onClick={() => { setActiveTab('categories'); setEditingItem(null); }}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.85rem 1rem', borderRadius: 'var(--radius-md)', background: activeTab === 'categories' ? 'var(--orange-tint)' : 'transparent', color: activeTab === 'categories' ? 'var(--orange)' : 'var(--text-muted)', fontWeight: '600', transition: 'var(--transition)', textAlign: 'left' }}>
-            <Tags size={20} /> Categories
+            className={`admin-nav-btn ${activeTab === 'categories' ? 'active' : ''}`}>
+            <Tags size={20} /> <span className="admin-nav-label">Categories</span>
           </button>
         </nav>
 
         <button 
           onClick={onLogout}
-          style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.85rem 1rem', borderRadius: 'var(--radius-md)', color: '#EF4444', fontWeight: '600', transition: 'var(--transition)', textAlign: 'left', marginTop: 'auto' }}>
-          <LogOut size={20} /> Sign Out
+          className="admin-logout-btn">
+          <LogOut size={20} /> <span className="admin-nav-label">Sign Out</span>
         </button>
       </aside>
 
       {/* Main Content Area */}
-      <main style={{ flex: 1, padding: '2.5rem', overflowY: 'auto' }}>
+      <main className="admin-main">
         
         {/* Dashboard Tab */}
         {activeTab === 'dashboard' && (
@@ -210,7 +210,7 @@ export default function AdminDashboard({ menuItems, setMenuItems, categories, se
 
             <form onSubmit={handleSaveItem} style={{ background: 'var(--surface)', padding: '2.5rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
               
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Item Name</label>
                   <input name="name" defaultValue={editingItem.name} required style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', background: 'var(--surface-soft)' }} />
@@ -224,7 +224,7 @@ export default function AdminDashboard({ menuItems, setMenuItems, categories, se
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Price (ETB)</label>
                   <input name="price" type="number" step="0.01" defaultValue={editingItem.price} required style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', background: 'var(--surface-soft)' }} />
@@ -244,7 +244,7 @@ export default function AdminDashboard({ menuItems, setMenuItems, categories, se
                 <textarea name="description" defaultValue={editingItem.description} required rows="3" style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', background: 'var(--surface-soft)', resize: 'vertical' }}></textarea>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Ingredients (comma separated)</label>
                   <input name="ingredients" defaultValue={editingItem.ingredients?.join(', ')} required style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', background: 'var(--surface-soft)' }} />
@@ -257,7 +257,7 @@ export default function AdminDashboard({ menuItems, setMenuItems, categories, se
 
               <div style={{ padding: '1.5rem', background: 'var(--surface-soft)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--border)' }}>
                 <h4 style={{ marginBottom: '1rem', fontSize: '1rem' }}>Nutritional Information</h4>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: '1rem' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Calories</label>
                     <input name="calories" defaultValue={editingItem.nutrition?.calories} placeholder="e.g. 500" style={{ width: '100%', padding: '0.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }} />
