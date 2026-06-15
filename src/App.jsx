@@ -18,7 +18,7 @@ const setStorage = (key, val) => {
 };
 
 export default function App() {
-  const [page, setPage] = useState('home'); // home, menu, contact, detail, admin
+  const [page, setPage] = useState('menu'); // home, menu, contact, detail, admin
   const [theme, setTheme] = useState(() => getStorage('wow-burger-theme', 'light'));
   const [category, setCategory] = useState('all');
   const [query, setQuery] = useState('');
@@ -349,7 +349,36 @@ export default function App() {
             />
           </div>
         )}
+
+        {page === 'favorites' && (
+          <div className="page page--favorites active">
+            <div className="section__container" style={{ paddingTop: '2rem', textAlign: 'center' }}>
+              <h2 className="section__title">Your Favorites</h2>
+              <p className="menu-empty">You haven't added any favorites yet.</p>
+              <button className="btn btn--primary" onClick={() => showPage('menu')}>Browse Menu</button>
+            </div>
+          </div>
+        )}
       </main>
+
+      <nav className="bottom-nav">
+        <button className={`bottom-nav__item ${page === 'home' ? 'active' : ''}`} onClick={() => showPage('home')}>
+          <span className="bottom-nav__icon">🏠</span>
+          <span className="bottom-nav__label">Home</span>
+        </button>
+        <button className={`bottom-nav__item ${page === 'menu' && category === 'all' ? 'active' : ''}`} onClick={() => { showPage('menu'); setCategory('all'); }}>
+          <span className="bottom-nav__icon">🍔</span>
+          <span className="bottom-nav__label">Food</span>
+        </button>
+        <button className={`bottom-nav__item ${page === 'menu' && category === 'cat-drinks' ? 'active' : ''}`} onClick={() => { showPage('menu'); setCategory('cat-drinks'); }}>
+          <span className="bottom-nav__icon">🥤</span>
+          <span className="bottom-nav__label">Drinks</span>
+        </button>
+        <button className={`bottom-nav__item ${page === 'favorites' ? 'active' : ''}`} onClick={() => showPage('favorites')}>
+          <span className="bottom-nav__icon">❤️</span>
+          <span className="bottom-nav__label">Favorites</span>
+        </button>
+      </nav>
 
       <footer className="footer" id="footer">
         <div className="footer__container">
