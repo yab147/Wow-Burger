@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Home, Utensils, Phone, Lock, MapPin, Mail, Clock, Send, CheckCircle2 } from 'lucide-react';
 import { initialMenuItems, initialCategories } from './initialData';
 import AdminDashboard from './AdminDashboard';
+import { checkServerHealth, menuItemsAPI, categoriesAPI, authAPI } from './api';
 
 const getStorage = (key, defaultVal) => {
   try {
@@ -30,9 +31,31 @@ export default function App() {
   const [detailItem, setDetailItem] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [contactSuccess, setContactSuccess] = useState(false);
+  const [useBackend, setUseBackend] = useState(false);
 
-  useEffect(() => { setStorage('wow-menu', menuItems); }, [menuItems]);
-  useEffect(() => { setStorage('wow-categories', categories); }, [categories]);
+  // Sync with MySQL database on mount if server is running
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const isHealthy = await checkServerHealth();
+        if (isHealthy) {
+          setUseBackend(true);
+          const [dbItems, dbCategories] = await Promise.all([
+            menuItemsAPI.getAll(),
+            categoriesAPI.getAll()
+          ]);
+          if (dbItems && dbItems.length > 0) setMenuItems(dbItems);
+          if (dbCategories && dbCategories.length > 0) setCategories(dbCategories);
+        }
+      } catch (err) {
+        console.warn('Backend unavailable, falling back to local data:', err.message);
+      }
+    }
+    loadData();
+  }, []);
+
+  useEffect(() => { if (!useBackend) setStorage('wow-menu', menuItems); }, [menuItems, useBackend]);
+  useEffect(() => { if (!useBackend) setStorage('wow-categories', categories); }, [categories, useBackend]);
   useEffect(() => { setStorage('wow-admin-auth', isAdminAuth); }, [isAdminAuth]);
 
   useEffect(() => {
@@ -50,14 +73,35 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleAdminLogin = (e) => {
+  const handleAdminLogin = async (e) => {
     e.preventDefault();
     const fd = new FormData(e.target);
-    if (fd.get('username') === 'admin' && fd.get('password') === 'admin') {
-      setIsAdminAuth(true);
+    const username = fd.get('username');
+    const password = fd.get('password');
+
+    if (useBackend) {
+      try {
+        const result = await authAPI.login(username, password);
+        if (result.success) {
+          setIsAdminAuth(true);
+        }
+      } catch (err) {
+        alert(err.message || 'Invalid admin credentials');
+      }
     } else {
-      alert('Invalid credentials. Try admin / admin');
+      if (username === 'admin' && password === 'admin') {
+        setIsAdminAuth(true);
+      } else {
+        alert('Invalid credentials. Try admin / admin');
+      }
     }
+  };
+
+  const handleLogout = () => {
+    if (useBackend) {
+      authAPI.logout();
+    }
+    setIsAdminAuth(false);
   };
 
   const mapCategoryName = (catId) => {
@@ -135,7 +179,7 @@ export default function App() {
                 <div className="hero__content">
                   <span className="hero__badge">
                     <span className="hero__badge-dot"></span>
-                    Now Open in Addis Ababa
+                    Now Open in Addis Ababa {useBackend && <span style={{ marginLeft: '6px', opacity: 0.8 }}>(Live DB)</span>}
                   </span>
                   <h1 className="hero__title">
                     Fresh Burgers<br />Made for Every<br />
@@ -411,7 +455,7 @@ export default function App() {
                   🔒
                 </div>
                 <h2 style={{ fontSize: '1.75rem', fontWeight: '800', color: 'var(--text-strong)', marginBottom: '0.5rem' }}>Admin Portal</h2>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Secure access to menu management</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Secure access to menu management {useBackend && '(Live DB)'}</p>
               </div>
               <form onSubmit={handleAdminLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div>
@@ -420,7 +464,7 @@ export default function App() {
                 </div>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Password</label>
-                  <input type="password" name="password" required defaultValue="admin" style={{ width: '100%', padding: '0.85rem 1rem', borderRadius: 'var(--radius-md)', border: '2px solid var(--border-soft)', background: 'var(--surface-soft)', color: 'var(--text)', fontSize: '1rem', transition: 'var(--transition)' }} onFocus={e => e.target.style.borderColor = 'var(--orange)'} onBlur={e => e.target.style.borderColor = 'var(--border-soft)'} />
+                  <input type="password" name="password" required defaultValue={useBackend ? "admin123" : "admin"} style={{ width: '100%', padding: '0.85rem 1rem', borderRadius: 'var(--radius-md)', border: '2px solid var(--border-soft)', background: 'var(--surface-soft)', color: 'var(--text)', fontSize: '1rem', transition: 'var(--transition)' }} onFocus={e => e.target.style.borderColor = 'var(--orange)'} onBlur={e => e.target.style.borderColor = 'var(--border-soft)'} />
                 </div>
                 <button type="submit" className="btn btn--primary btn--lg" style={{ width: '100%', marginTop: '1rem', padding: '1rem', borderRadius: 'var(--radius-md)', fontSize: '1.05rem' }}>
                   Sign In
@@ -435,7 +479,8 @@ export default function App() {
             <AdminDashboard 
               menuItems={menuItems} setMenuItems={setMenuItems} 
               categories={categories} setCategories={setCategories} 
-              onLogout={() => setIsAdminAuth(false)} 
+              onLogout={handleLogout} 
+              useBackend={useBackend}
             />
           </div>
         )}
