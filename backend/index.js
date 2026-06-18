@@ -50,12 +50,15 @@ app.get('/', (req, res) => {
 });
 
 // Health check endpoint
-app.get('/api/health', (req, res) => {
+app.get('/api/health', async (req, res) => {
+  const dbStatus = await testConnection();
   res.json({
     success: true,
     message: 'Wow Burger API is running 🍔',
     timestamp: new Date().toISOString(),
     version: '1.0.0',
+    database: dbStatus.success ? 'Connected' : 'Disconnected',
+    databaseError: dbStatus.error || null,
   });
 });
 
@@ -77,7 +80,8 @@ app.use(errorHandler);
 // ============================================================
 async function startServer() {
   // Test database connection
-  const dbConnected = await testConnection();
+  const dbStatus = await testConnection();
+  const dbConnected = dbStatus.success;
   
   if (!dbConnected) {
     console.warn('⚠️  Server starting without database connection.');

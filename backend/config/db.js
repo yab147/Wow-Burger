@@ -26,10 +26,10 @@ export async function testConnection() {
     const connection = await pool.getConnection();
     console.log('✅ MySQL connected successfully');
     connection.release();
-    return true;
+    return { success: true };
   } catch (error) {
     console.error('❌ MySQL connection failed:', error.message);
-    return false;
+    return { success: false, error: error.message };
   }
 }
 
