@@ -6,7 +6,7 @@
 USE wow_burger;
 
 -- ============================================================
--- 1. Seed Admin User (password: admin123 - bcrypt hashed)
+-- 1. Seed Admin User (password: admin - bcrypt hashed)
 -- In production, generate a real hash with bcrypt
 -- ============================================================
 INSERT INTO admin_users (username, password_hash, full_name, role) VALUES
