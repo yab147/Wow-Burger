@@ -57,8 +57,16 @@ app.get('/api/health', async (req, res) => {
     message: 'Wow Burger API is running 🍔',
     timestamp: new Date().toISOString(),
     version: '1.0.0',
-    database: dbStatus.success ? 'Connected' : 'Disconnected',
-    databaseError: dbStatus.error || null,
+    dbStatus: dbStatus,
+    envCheck: {
+      has_host: !!process.env.DB_HOST,
+      has_port: !!process.env.DB_PORT,
+      has_user: !!process.env.DB_USER,
+      has_password: !!process.env.DB_PASSWORD,
+      has_database: !!process.env.DB_NAME,
+      has_ssl: !!process.env.DB_SSL,
+      db_host_value: process.env.DB_HOST ? `${process.env.DB_HOST.slice(0, 10)}...` : null,
+    }
   });
 });
 
