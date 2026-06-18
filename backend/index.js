@@ -44,6 +44,11 @@ app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/menu-items', menuItemRoutes);
 
+// Root endpoint welcome message
+app.get('/', (req, res) => {
+  res.send('<h1>🍔 Wow Burger API is running!</h1><p>Use the frontend application to browse the menu, or visit <a href="/api/health">/api/health</a> for server status.</p>');
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({
