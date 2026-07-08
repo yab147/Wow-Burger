@@ -97,6 +97,30 @@ async function setup() {
       console.log('   ⚠️  Data already exists — skipping seed.');
     }
 
+    // Step 4: Run features migration
+    console.log('⚡ Step 4: Applying features migrations (003_features.sql)...');
+    try {
+      const featuresSQL = fs.readFileSync(
+        path.join(__dirname, 'sql', '003_features.sql'),
+        'utf8'
+      );
+      // Run statement by statement to handle pre-existing table/column errors gracefully
+      const statements = featuresSQL.split(';').map(s => s.trim()).filter(Boolean);
+      for (const stmt of statements) {
+        try {
+          await connection.query(stmt);
+        } catch (e) {
+          // Ignore duplicate field or key warnings
+          if (e.code !== 'ER_DUP_FIELDNAME' && e.code !== 'ER_TABLE_EXISTS_ERROR' && e.code !== 'ER_DUP_KEYNAME') {
+            throw e;
+          }
+        }
+      }
+      console.log('   ✅ Features migrations applied successfully.');
+    } catch (err) {
+      console.log('   ⚠️  Migration skipped or handled: ' + err.message);
+    }
+
     console.log('');
     console.log('═══════════════════════════════════════');
     console.log('🎉 Database setup complete!');

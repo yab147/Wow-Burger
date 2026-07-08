@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Home, Utensils, Phone, Lock, MapPin, Mail, Clock, Send, CheckCircle2 } from 'lucide-react';
+import { Home, Utensils, Phone, Lock, MapPin, Mail, Clock, Send, CheckCircle2, Flame, Search, Heart, Shield } from 'lucide-react';
 import { initialMenuItems, initialCategories } from './initialData';
 import AdminDashboard from './AdminDashboard';
 import { checkServerHealth, menuItemsAPI, categoriesAPI, authAPI } from './api';
@@ -19,11 +19,75 @@ const setStorage = (key, val) => {
   } catch (e) {}
 };
 
+function ImageCarousel({ images, mainImage, name }) {
+  const [index, setIndex] = React.useState(0);
+  const allImages = images && images.length > 0 
+    ? images.map(img => img.image_url) 
+    : [mainImage];
+
+  const uniqueImages = Array.from(new Set(allImages.filter(Boolean)));
+
+  if (uniqueImages.length <= 1) {
+    return (
+      <div className="detail__image-wrap">
+        <img className="detail__image" src={uniqueImages[0] || 'assets/classic_burger.png'} alt={name} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="detail__image-carousel">
+      <div className="carousel__track-container">
+        <img 
+          className="detail__image carousel__image" 
+          src={uniqueImages[index]} 
+          alt={`${name} - view ${index + 1}`} 
+        />
+        <button 
+          type="button" 
+          className="carousel__btn carousel__btn--prev" 
+          onClick={(e) => { 
+            e.stopPropagation(); 
+            setIndex(prev => (prev === 0 ? uniqueImages.length - 1 : prev - 1)); 
+          }}
+        >
+          &lsaquo;
+        </button>
+        <button 
+          type="button" 
+          className="carousel__btn carousel__btn--next" 
+          onClick={(e) => { 
+            e.stopPropagation(); 
+            setIndex(prev => (prev === uniqueImages.length - 1 ? 0 : prev + 1)); 
+          }}
+        >
+          &rsaquo;
+        </button>
+      </div>
+      <div className="carousel__indicators">
+        {uniqueImages.map((_, i) => (
+          <button 
+            key={i} 
+            type="button" 
+            className={`carousel__indicator ${i === index ? 'active' : ''}`}
+            onClick={(e) => { e.stopPropagation(); setIndex(i); }}
+            aria-label={`Go to slide ${i + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [page, setPage] = useState('menu'); // home, menu, contact, detail, admin
   const [theme, setTheme] = useState(() => getStorage('wow-burger-theme', 'light'));
   const [category, setCategory] = useState('all');
   const [query, setQuery] = useState('');
+  const [recipeFocus, setRecipeFocus] = useState(null);
+  const [favorites, setFavorites] = useState(() => getStorage('wow-favorites', []));
+  
+  useEffect(() => { setStorage('wow-favorites', favorites); }, [favorites]);
   
   const [menuItems, setMenuItems] = useState(() => getStorage('wow-menu', initialMenuItems));
   const [categories, setCategories] = useState(() => getStorage('wow-categories', initialCategories));
@@ -73,6 +137,22 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const showItemDetail = async (item) => {
+    setDetailItem(item);
+    showPage('detail');
+    if (useBackend) {
+      try {
+        const fullItem = await menuItemsAPI.getById(item.id);
+        if (fullItem) {
+          setDetailItem(fullItem);
+        }
+      } catch (err) {
+        console.error('Error fetching item details:', err);
+      }
+    }
+  };
+
+
   const handleAdminLogin = async (e) => {
     e.preventDefault();
     const fd = new FormData(e.target);
@@ -108,32 +188,107 @@ export default function App() {
     return categories.find(c => c.id === catId)?.name || 'Menu';
   };
 
+  const countRecipeFocus = (focusType) => {
+    const itemsToCount = menuItems.filter(item => category === 'all' || item.category_id === category);
+    return itemsToCount.filter(item => {
+      const text = [item.name, item.description, ...(item.ingredients || []), item.badge || ''].join(' ').toLowerCase();
+      if (focusType === 'Vegetarian') return text.includes('vegetarian') || text.includes('veg');
+      if (focusType === 'Vegan') return text.includes('vegan');
+      if (focusType === 'Gluten-Free') return text.includes('gluten-free') || text.includes('gluten free');
+      if (focusType === 'Spicy') return text.includes('spicy') || text.includes('hot');
+      if (focusType === 'Signature') return text.includes('signature') || item.is_featured;
+      return false;
+    }).length;
+  };
+
+  const toggleFavorite = (itemId, e) => {
+    if (e) e.stopPropagation();
+    setFavorites(prev => prev.includes(itemId) ? prev.filter(id => id !== itemId) : [...prev, itemId]);
+  };
+
   const filteredItems = menuItems.filter(item => {
     const matchCat = category === 'all' || item.category_id === category;
-    const matchQuery = !query || [item.name, item.description, ...item.ingredients].join(' ').toLowerCase().includes(query.toLowerCase());
-    return matchCat && matchQuery;
+    const matchQuery = !query || [item.name, item.description, ...(item.ingredients || [])].join(' ').toLowerCase().includes(query.toLowerCase());
+    
+    let matchFocus = true;
+    if (recipeFocus) {
+      const text = [item.name, item.description, ...(item.ingredients || []), item.badge || ''].join(' ').toLowerCase();
+      if (recipeFocus === 'Vegetarian') matchFocus = text.includes('vegetarian') || text.includes('veg');
+      else if (recipeFocus === 'Vegan') matchFocus = text.includes('vegan');
+      else if (recipeFocus === 'Gluten-Free') matchFocus = text.includes('gluten-free') || text.includes('gluten free');
+      else if (recipeFocus === 'Spicy') matchFocus = text.includes('spicy') || text.includes('hot');
+      else if (recipeFocus === 'Signature') matchFocus = text.includes('signature') || item.is_featured;
+    }
+    
+    return matchCat && matchQuery && matchFocus;
   });
 
   const popularItems = menuItems.slice(0, 4);
 
   return (
     <>
+      <div className="top-bar">
+        <div className="top-bar__container">
+          <div className="top-bar__left">
+            <span className="top-bar__item">
+              <MapPin size={12} className="top-bar__icon text-orange" />
+              Bole Road, Walkway Plaza, Addis Ababa, Ethiopia
+            </span>
+            <span className="top-bar__item">
+              <Phone size={12} className="top-bar__icon text-yellow" />
+              +251 11 661 2345 / +251 911 412 345
+            </span>
+            <span className="top-bar__item">
+              <Clock size={12} className="top-bar__icon text-yellow" />
+              10:00 AM - 11:00 PM (LT)
+            </span>
+          </div>
+          <div className="top-bar__right">
+            <span className="top-bar__status">
+              <span className="top-bar__status-dot"></span>
+              WE REOPEN AT 10:00 AM
+            </span>
+          </div>
+        </div>
+      </div>
+
       <header className={`header ${window.scrollY > 0 ? 'scrolled' : ''}`} id="header">
         <div className="header__container">
           <a href="#" className="header__logo" onClick={(e) => { e.preventDefault(); showPage('home'); }}>
-            <span className="header__logo-icon">🍔</span>
-            <span className="header__logo-text">Wow<span className="header__logo-accent">Burger</span></span>
+            <div className="header__logo-badge">
+              <Flame size={16} color="white" fill="white" />
+            </div>
+            <div className="header__logo-text-wrapper">
+              <span className="header__logo-text">WOW<span className="header__logo-accent">BURGER</span></span>
+              <span className="header__logo-sub">ETHIOPIA'S PREMIER CRAFT BURGERS</span>
+            </div>
           </a>
-          <nav className="header__nav">
-            <button type="button" className={`header__nav-link ${page === 'home' ? 'active' : ''}`} onClick={() => showPage('home')}>Home</button>
-            <button type="button" className={`header__nav-link ${page === 'menu' ? 'active' : ''}`} onClick={() => showPage('menu')}>Menu</button>
-            <button type="button" className={`header__nav-link ${page === 'contact' ? 'active' : ''}`} onClick={() => showPage('contact')}>Contact</button>
-            <button type="button" className={`header__nav-link ${page === 'admin' ? 'active' : ''}`} onClick={() => showPage('admin')}>Admin</button>
-          </nav>
-          <button type="button" className="theme-toggle" onClick={toggleTheme} aria-label="Switch theme">
-            <span className="theme-toggle__icon theme-toggle__icon--sun">☀</span>
-            <span className="theme-toggle__icon theme-toggle__icon--moon">☾</span>
-          </button>
+
+          <div className="header__search-wrap">
+            <Search size={16} className="header__search-icon" />
+            <input 
+              type="text" 
+              placeholder="Search dishes or ingredients..." 
+              value={query}
+              onChange={(e) => { setQuery(e.target.value); showPage('menu'); }}
+            />
+          </div>
+
+          <div className="header__actions">
+            <button type="button" className={`header__fav-btn ${page === 'favorites' ? 'active' : ''}`} onClick={() => showPage('favorites')}>
+              <Heart size={14} fill="currentColor" className="header__fav-icon" /> <span>Favs ({favorites.length})</span>
+            </button>
+
+            <button type="button" className="header__admin-btn" onClick={() => showPage('admin')} aria-label="Staff Portal">
+              <Shield size={18} fill="currentColor" />
+            </button>
+
+            <button type="button" className="theme-toggle" onClick={toggleTheme} aria-label="Switch theme">
+              <span className="theme-toggle__icon theme-toggle__icon--sun">☀</span>
+              <span className="theme-toggle__icon theme-toggle__icon--moon">☾</span>
+            </button>
+          </div>
+
           <button className={`header__menu-btn ${mobileMenuOpen ? 'active' : ''}`} onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             <span className="header__menu-icon"></span>
           </button>
@@ -236,9 +391,15 @@ export default function App() {
                 </div>
                 <div className="popular__grid">
                   {popularItems.map(item => (
-                    <article key={item.id} className="food-card" onClick={() => { setDetailItem(item); showPage('detail'); }}>
+                    <article key={item.id} className="food-card" onClick={() => showItemDetail(item)}>
                       <div className="food-card__image-wrap">
                         {item.badge && <span className="food-card__badge">{item.badge}</span>}
+                        <button 
+                          className={`food-card__fav-btn ${favorites.includes(item.id) ? 'active' : ''}`} 
+                          onClick={(e) => toggleFavorite(item.id, e)}
+                        >
+                          <Heart size={16} fill={favorites.includes(item.id) ? "currentColor" : "none"} />
+                        </button>
                         <img className="food-card__image" src={item.image_url} alt={item.name} />
                       </div>
                       <div className="food-card__body">
@@ -276,21 +437,49 @@ export default function App() {
                 </div>
               </div>
               <div className="section__container">
-                <div className="menu-toolbar">
-                  <div className="menu-toolbar__search">
-                    <input type="search" value={query} onChange={e => setQuery(e.target.value)} placeholder="Search..." />
-                    {query && <button className="menu-toolbar__clear" onClick={() => setQuery('')}>×</button>}
-                  </div>
-                  <div className="menu-toolbar__meta">
-                    <p className="menu-results">Showing {filteredItems.length} items</p>
-                    <button className="menu-reset" onClick={() => { setCategory('all'); setQuery(''); }}>Reset</button>
+                <div className="recipe-focus">
+                  <span className="recipe-focus__title">ADJUST RECIPE FOCUS</span>
+                  <div className="recipe-focus__tags">
+                    {[
+                      { name: 'Vegetarian', icon: '🌱' },
+                      { name: 'Vegan', icon: '🌿' },
+                      { name: 'Gluten-Free', icon: '🛡️' },
+                      { name: 'Spicy', icon: '🔥' },
+                      { name: 'Signature', icon: '🏅' }
+                    ].map(tag => {
+                      const count = countRecipeFocus(tag.name);
+                      const isActive = recipeFocus === tag.name;
+                      return (
+                        <button 
+                          key={tag.name} 
+                          className={`recipe-focus__tag-btn ${isActive ? 'active' : ''}`}
+                          onClick={() => setRecipeFocus(isActive ? null : tag.name)}
+                        >
+                          <span className="recipe-focus__tag-icon">{tag.icon}</span>
+                          <span className="recipe-focus__tag-name">{tag.name}</span>
+                          <span className="recipe-focus__tag-count">{count}</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
+
+                <div className="menu-heading-bar">
+                  <h2 className="menu-heading-bar__title">Menu</h2>
+                  <p className="menu-heading-bar__subtitle">{filteredItems.length} options matching</p>
+                </div>
+
                 <div className="menu-grid">
                   {filteredItems.map(item => (
-                    <article key={item.id} className="food-card" onClick={() => { setDetailItem(item); showPage('detail'); }}>
+                    <article key={item.id} className="food-card" onClick={() => showItemDetail(item)}>
                       <div className="food-card__image-wrap">
                         {item.badge && <span className="food-card__badge">{item.badge}</span>}
+                        <button 
+                          className={`food-card__fav-btn ${favorites.includes(item.id) ? 'active' : ''}`} 
+                          onClick={(e) => toggleFavorite(item.id, e)}
+                        >
+                          <Heart size={16} fill={favorites.includes(item.id) ? "currentColor" : "none"} />
+                        </button>
                         <img className="food-card__image" src={item.image_url} alt={item.name} />
                       </div>
                       <div className="food-card__body">
@@ -304,10 +493,19 @@ export default function App() {
                       </div>
                     </article>
                   ))}
-                  {filteredItems.length === 0 && (
-                    <div className="menu-empty">No items match this filter yet. Try another search.</div>
-                  )}
                 </div>
+
+                {filteredItems.length === 0 && (
+                  <div className="menu-no-matches-container">
+                    <div className="menu-no-matches-box">
+                      <span className="menu-no-matches-cross">❌</span>
+                      <h3>No Matches Found</h3>
+                      <button className="btn btn--primary menu-no-matches-reset" onClick={() => { setCategory('all'); setQuery(''); setRecipeFocus(null); }}>
+                        Reset Filters
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -390,9 +588,7 @@ export default function App() {
                 Back to menu
               </button>
               <section className="detail__hero">
-                <div className="detail__image-wrap">
-                  <img className="detail__image" src={detailItem.image_url} alt={detailItem.name} />
-                </div>
+                <ImageCarousel images={detailItem.images} mainImage={detailItem.image_url} name={detailItem.name} />
                 <div className="detail__info">
                   <p className="detail__category">{mapCategoryName(detailItem.category_id)}</p>
                   <h2 className="detail__name">{detailItem.name}</h2>
@@ -487,10 +683,40 @@ export default function App() {
 
         {page === 'favorites' && (
           <div className="page page--favorites active">
-            <div className="section__container" style={{ paddingTop: '2rem', textAlign: 'center' }}>
-              <h2 className="section__title">Your Favorites</h2>
-              <p className="menu-empty">You haven't added any favorites yet.</p>
-              <button className="btn btn--primary" onClick={() => showPage('menu')}>Browse Menu</button>
+            <div className="section__container" style={{ paddingTop: '2rem' }}>
+              <h2 className="section__title" style={{ textAlign: 'center', marginBottom: '2rem' }}>Your Favorites</h2>
+              {favorites.length === 0 ? (
+                <div style={{ textAlign: 'center' }}>
+                  <p className="menu-empty">You haven't added any favorites yet.</p>
+                  <button className="btn btn--primary" onClick={() => showPage('menu')}>Browse Menu</button>
+                </div>
+              ) : (
+                <div className="menu-grid">
+                  {menuItems.filter(item => favorites.includes(item.id)).map(item => (
+                    <article key={item.id} className="food-card" onClick={() => showItemDetail(item)}>
+                      <div className="food-card__image-wrap">
+                        {item.badge && <span className="food-card__badge">{item.badge}</span>}
+                        <button 
+                          className={`food-card__fav-btn active`} 
+                          onClick={(e) => toggleFavorite(item.id, e)}
+                        >
+                          <Heart size={16} fill="currentColor" />
+                        </button>
+                        <img className="food-card__image" src={item.image_url} alt={item.name} />
+                      </div>
+                      <div className="food-card__body">
+                        <p className="food-card__category">{mapCategoryName(item.category_id)}</p>
+                        <h3 className="food-card__name">{item.name}</h3>
+                        <p className="food-card__desc">{item.description}</p>
+                        <div className="food-card__footer">
+                          <p className="food-card__price">{item.price} ETB</p>
+                          <button className="food-card__btn">View details</button>
+                        </div>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}

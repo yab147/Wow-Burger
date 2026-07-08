@@ -1,11 +1,16 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { testConnection } from './config/db.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import authRoutes from './routes/authRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import menuItemRoutes from './routes/menuItemRoutes.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Load environment variables
 dotenv.config();
@@ -28,6 +33,9 @@ app.use(express.json());
 
 // Parse URL-encoded request bodies
 app.use(express.urlencoded({ extended: true }));
+
+// Serve uploaded images statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Request logging (development)
 app.use((req, res, next) => {

@@ -30,6 +30,34 @@ export function authMiddleware(req, res, next) {
 }
 
 /**
+ * Optional auth — sets req.admin if valid token provided, but doesn't block
+ */
+export function optionalAuth(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.split(' ')[1];
+    try {
+      req.admin = jwt.verify(token, JWT_SECRET);
+    } catch {
+      // ignore invalid tokens
+    }
+  }
+  next();
+}
+
+/**
+ * Role-based permission middleware
+ */
+export function requireRole(...roles) {
+  return (req, res, next) => {
+    if (!req.admin || !roles.includes(req.admin.role)) {
+      return res.status(403).json({ success: false, message: 'Insufficient permissions.' });
+    }
+    next();
+  };
+}
+
+/**
  * Generate JWT token for admin user
  */
 export function generateToken(payload) {
