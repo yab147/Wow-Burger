@@ -89,38 +89,39 @@ export default function App() {
   
   useEffect(() => { setStorage('wow-favorites', favorites); }, [favorites]);
   
-  const [menuItems, setMenuItems] = useState(() => getStorage('wow-menu', initialMenuItems));
-  const [categories, setCategories] = useState(() => getStorage('wow-categories', initialCategories));
-  const [isAdminAuth, setIsAdminAuth] = useState(() => getStorage('wow-admin-auth', false));
+  const [menuItems, setMenuItems] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [isAdminAuth, setIsAdminAuth] = useState(() => {
+    try { return !!localStorage.getItem('wow-admin-token'); } catch { return false; }
+  });
   const [detailItem, setDetailItem] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [contactSuccess, setContactSuccess] = useState(false);
-  const [useBackend, setUseBackend] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Sync with MySQL database on mount if server is running
+  const useBackend = true; // Hardcoded true to enforce production mode in children
+
+  // Always fetch from MySQL database on mount
   useEffect(() => {
     async function loadData() {
       try {
-        const isHealthy = await checkServerHealth();
-        if (isHealthy) {
-          setUseBackend(true);
-          const [dbItems, dbCategories] = await Promise.all([
-            menuItemsAPI.getAll(),
-            categoriesAPI.getAll()
-          ]);
-          if (dbItems && dbItems.length > 0) setMenuItems(dbItems);
-          if (dbCategories && dbCategories.length > 0) setCategories(dbCategories);
-        }
+        setLoading(true);
+        const [dbItems, dbCategories] = await Promise.all([
+          menuItemsAPI.getAll(),
+          categoriesAPI.getAll()
+        ]);
+        if (dbItems) setMenuItems(dbItems);
+        if (dbCategories) setCategories(dbCategories);
       } catch (err) {
-        console.warn('Backend unavailable, falling back to local data:', err.message);
+        console.error('Failed to load menu data:', err);
+        setError('Failed to connect to the database. Please make sure the server is running.');
+      } finally {
+        setLoading(false);
       }
     }
     loadData();
   }, []);
-
-  useEffect(() => { if (!useBackend) setStorage('wow-menu', menuItems); }, [menuItems, useBackend]);
-  useEffect(() => { if (!useBackend) setStorage('wow-categories', categories); }, [categories, useBackend]);
-  useEffect(() => { setStorage('wow-admin-auth', isAdminAuth); }, [isAdminAuth]);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -140,15 +141,13 @@ export default function App() {
   const showItemDetail = async (item) => {
     setDetailItem(item);
     showPage('detail');
-    if (useBackend) {
-      try {
-        const fullItem = await menuItemsAPI.getById(item.id);
-        if (fullItem) {
-          setDetailItem(fullItem);
-        }
-      } catch (err) {
-        console.error('Error fetching item details:', err);
+    try {
+      const fullItem = await menuItemsAPI.getById(item.id);
+      if (fullItem) {
+        setDetailItem(fullItem);
       }
+    } catch (err) {
+      console.error('Error fetching item details:', err);
     }
   };
 
@@ -159,28 +158,18 @@ export default function App() {
     const username = fd.get('username');
     const password = fd.get('password');
 
-    if (useBackend) {
-      try {
-        const result = await authAPI.login(username, password);
-        if (result.success) {
-          setIsAdminAuth(true);
-        }
-      } catch (err) {
-        alert(err.message || 'Invalid admin credentials');
-      }
-    } else {
-      if (username === 'admin' && password === 'admin') {
+    try {
+      const result = await authAPI.login(username, password);
+      if (result.success) {
         setIsAdminAuth(true);
-      } else {
-        alert('Invalid credentials. Try admin / admin');
       }
+    } catch (err) {
+      alert(err.message || 'Invalid admin credentials');
     }
   };
 
   const handleLogout = () => {
-    if (useBackend) {
-      authAPI.logout();
-    }
+    authAPI.logout();
     setIsAdminAuth(false);
   };
 
@@ -650,17 +639,17 @@ export default function App() {
                 <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '64px', height: '64px', borderRadius: '50%', background: 'var(--orange-tint)', color: 'var(--orange)', fontSize: '2rem', marginBottom: '1rem' }}>
                   🔒
                 </div>
-                <h2 style={{ fontSize: '1.75rem', fontWeight: '800', color: 'var(--text-strong)', marginBottom: '0.5rem' }}>Admin Portal</h2>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Secure access to menu management {useBackend && '(Live DB)'}</p>
+                <h2 style={{ fontSize: '1.75rem', fontWeight: '800', color: 'var(--text-strong)', marginBottom: '0.5rem' }}>Staff Portal</h2>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Secure access to menu management (Live DB)</p>
               </div>
               <form onSubmit={handleAdminLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Username</label>
-                  <input type="text" name="username" required defaultValue="admin" style={{ width: '100%', padding: '0.85rem 1rem', borderRadius: 'var(--radius-md)', border: '2px solid var(--border-soft)', background: 'var(--surface-soft)', color: 'var(--text)', fontSize: '1rem', transition: 'var(--transition)' }} onFocus={e => e.target.style.borderColor = 'var(--orange)'} onBlur={e => e.target.style.borderColor = 'var(--border-soft)'} />
+                  <input type="text" name="username" required style={{ width: '100%', padding: '0.85rem 1rem', borderRadius: 'var(--radius-md)', border: '2px solid var(--border-soft)', background: 'var(--surface-soft)', color: 'var(--text)', fontSize: '1rem', transition: 'var(--transition)' }} onFocus={e => e.target.style.borderColor = 'var(--orange)'} onBlur={e => e.target.style.borderColor = 'var(--border-soft)'} />
                 </div>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Password</label>
-                  <input type="password" name="password" required defaultValue={useBackend ? "admin123" : "admin"} style={{ width: '100%', padding: '0.85rem 1rem', borderRadius: 'var(--radius-md)', border: '2px solid var(--border-soft)', background: 'var(--surface-soft)', color: 'var(--text)', fontSize: '1rem', transition: 'var(--transition)' }} onFocus={e => e.target.style.borderColor = 'var(--orange)'} onBlur={e => e.target.style.borderColor = 'var(--border-soft)'} />
+                  <input type="password" name="password" required style={{ width: '100%', padding: '0.85rem 1rem', borderRadius: 'var(--radius-md)', border: '2px solid var(--border-soft)', background: 'var(--surface-soft)', color: 'var(--text)', fontSize: '1rem', transition: 'var(--transition)' }} onFocus={e => e.target.style.borderColor = 'var(--orange)'} onBlur={e => e.target.style.borderColor = 'var(--border-soft)'} />
                 </div>
                 <button type="submit" className="btn btn--primary btn--lg" style={{ width: '100%', marginTop: '1rem', padding: '1rem', borderRadius: 'var(--radius-md)', fontSize: '1.05rem' }}>
                   Sign In
