@@ -116,6 +116,8 @@ export default function App() {
   const [error, setError] = useState(null);
   const [backendOnline, setBackendOnline] = useState(false);
   const [storeStatus, setStoreStatus] = useState(getStoreStatus);
+  const [loginError, setLoginError] = useState('');
+  const [loginLoading, setLoginLoading] = useState(false);
 
   // Derive useBackend from actual connectivity
   const useBackend = backendOnline;
@@ -193,17 +195,39 @@ export default function App() {
 
   const handleAdminLogin = async (e) => {
     e.preventDefault();
+    setLoginError('');
+    setLoginLoading(true);
     const fd = new FormData(e.target);
     const username = fd.get('username');
     const password = fd.get('password');
 
     try {
-      const result = await authAPI.login(username, password);
-      if (result.success) {
-        setIsAdminAuth(true);
+      if (backendOnline) {
+        // Live backend login
+        const result = await authAPI.login(username, password);
+        if (result.success) {
+          setIsAdminAuth(true);
+        } else {
+          setLoginError('Invalid username or password.');
+        }
+      } else {
+        // Offline fallback — check against hardcoded demo credentials
+        if (username === 'admin' && password === 'admin123') {
+          localStorage.setItem('wow-admin-token', 'offline-demo-token');
+          setIsAdminAuth(true);
+        } else {
+          setLoginError('Invalid credentials. In demo mode use: admin / admin123');
+        }
       }
     } catch (err) {
-      alert(err.message || 'Invalid admin credentials');
+      // If backend returned HTML (gateway error, wrong URL, etc.) show friendly message
+      if (err.message && (err.message.includes('JSON') || err.message.includes('token') || err.message.includes('Unexpected'))) {
+        setLoginError('Cannot reach the server. Check your backend URL or try again.');
+      } else {
+        setLoginError(err.message || 'Login failed. Please try again.');
+      }
+    } finally {
+      setLoginLoading(false);
     }
   };
 
@@ -681,29 +705,48 @@ export default function App() {
         {!loading && page === 'admin' && !isAdminAuth && (
           <div className="page active" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 'calc(100vh - var(--header-height))', background: 'var(--hero-bg)' }}>
             <div style={{ maxWidth: '420px', width: '100%', padding: '3rem 2.5rem', background: 'var(--surface)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-xl)', border: '1px solid var(--border)' }}>
-              <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+              <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                 <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '64px', height: '64px', borderRadius: '50%', background: 'var(--orange-tint)', color: 'var(--orange)', fontSize: '2rem', marginBottom: '1rem' }}>
                   🔒
                 </div>
                 <h2 style={{ fontSize: '1.75rem', fontWeight: '800', color: 'var(--text-strong)', marginBottom: '0.5rem' }}>Staff Portal</h2>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Secure access to menu management{backendOnline ? ' (Live DB)' : ''}</p>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', fontWeight: '600', padding: '0.25rem 0.75rem', borderRadius: 'var(--radius-full)', background: backendOnline ? 'rgba(16,185,129,0.1)' : 'rgba(255,107,0,0.1)', color: backendOnline ? '#10B981' : 'var(--orange)' }}>
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'currentColor', display: 'inline-block' }}></span>
+                  {backendOnline ? 'Live Database' : 'Demo Mode'}
+                </span>
               </div>
+
+              {/* Inline error message */}
+              {loginError && (
+                <div style={{ marginBottom: '1.25rem', padding: '0.85rem 1rem', borderRadius: 'var(--radius-md)', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: '#EF4444', fontSize: '0.9rem', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  ⚠️ {loginError}
+                </div>
+              )}
+
               <form onSubmit={handleAdminLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Username</label>
-                  <input type="text" name="username" required style={{ width: '100%', padding: '0.85rem 1rem', borderRadius: 'var(--radius-md)', border: '2px solid var(--border-soft)', background: 'var(--surface-soft)', color: 'var(--text)', fontSize: '1rem', transition: 'var(--transition)' }} onFocus={e => e.target.style.borderColor = 'var(--orange)'} onBlur={e => e.target.style.borderColor = 'var(--border-soft)'} />
+                  <input type="text" name="username" required autoComplete="username" style={{ width: '100%', padding: '0.85rem 1rem', borderRadius: 'var(--radius-md)', border: '2px solid var(--border-soft)', background: 'var(--surface-soft)', color: 'var(--text)', fontSize: '1rem', transition: 'var(--transition)', outline: 'none' }} onFocus={e => e.target.style.borderColor = 'var(--orange)'} onBlur={e => e.target.style.borderColor = 'var(--border-soft)'} />
                 </div>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Password</label>
-                  <input type="password" name="password" required style={{ width: '100%', padding: '0.85rem 1rem', borderRadius: 'var(--radius-md)', border: '2px solid var(--border-soft)', background: 'var(--surface-soft)', color: 'var(--text)', fontSize: '1rem', transition: 'var(--transition)' }} onFocus={e => e.target.style.borderColor = 'var(--orange)'} onBlur={e => e.target.style.borderColor = 'var(--border-soft)'} />
+                  <input type="password" name="password" required autoComplete="current-password" style={{ width: '100%', padding: '0.85rem 1rem', borderRadius: 'var(--radius-md)', border: '2px solid var(--border-soft)', background: 'var(--surface-soft)', color: 'var(--text)', fontSize: '1rem', transition: 'var(--transition)', outline: 'none' }} onFocus={e => e.target.style.borderColor = 'var(--orange)'} onBlur={e => e.target.style.borderColor = 'var(--border-soft)'} />
                 </div>
-                <button type="submit" className="btn btn--primary btn--lg" style={{ width: '100%', marginTop: '1rem', padding: '1rem', borderRadius: 'var(--radius-md)', fontSize: '1.05rem' }}>
-                  Sign In
+                <button type="submit" disabled={loginLoading} className="btn btn--primary btn--lg" style={{ width: '100%', marginTop: '0.5rem', padding: '1rem', borderRadius: 'var(--radius-md)', fontSize: '1.05rem', opacity: loginLoading ? 0.7 : 1 }}>
+                  {loginLoading ? '⏳ Signing in...' : 'Sign In'}
                 </button>
               </form>
+
+              {/* Demo mode hint */}
+              {!backendOnline && (
+                <p style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-muted)', padding: '0.75rem', borderRadius: 'var(--radius-md)', background: 'var(--surface-soft)' }}>
+                  🔌 No backend detected — demo login: <strong>admin</strong> / <strong>admin123</strong>
+                </p>
+              )}
             </div>
           </div>
         )}
+
 
         {!loading && page === 'admin' && isAdminAuth && (
           <div className="page active" style={{ padding: '0' }}>
