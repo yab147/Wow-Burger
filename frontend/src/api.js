@@ -217,7 +217,7 @@ export const menuItemsAPI = {
 // ============================================================
 export async function checkServerHealth() {
   try {
-    const response = await fetch(`${API_BASE}/health`, { signal: AbortSignal.timeout(3000) });
+    const response = await fetch(`${API_BASE}/health`, { signal: AbortSignal.timeout(2000) });
     return response.ok;
   } catch { return false; }
 }

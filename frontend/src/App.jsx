@@ -79,8 +79,23 @@ function ImageCarousel({ images, mainImage, name }) {
   );
 }
 
+// Helper: compute open/closed status from business hours
+function getStoreStatus() {
+  const now = new Date();
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+  const currentMinutes = hours * 60 + minutes;
+  const openTime = 10 * 60;   // 10:00 AM
+  const closeTime = 23 * 60;  // 11:00 PM
+  if (currentMinutes >= openTime && currentMinutes < closeTime) {
+    const closeH = Math.floor(closeTime / 60);
+    return { open: true, text: `OPEN NOW · Until ${closeH > 12 ? closeH - 12 : closeH}:00 PM` };
+  }
+  return { open: false, text: 'WE REOPEN AT 10:00 AM' };
+}
+
 export default function App() {
-  const [page, setPage] = useState('menu'); // home, menu, contact, detail, admin
+  const [page, setPage] = useState('menu');
   const [theme, setTheme] = useState(() => getStorage('wow-burger-theme', 'light'));
   const [category, setCategory] = useState('all');
   const [query, setQuery] = useState('');
@@ -99,28 +114,52 @@ export default function App() {
   const [contactSuccess, setContactSuccess] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [backendOnline, setBackendOnline] = useState(false);
+  const [storeStatus, setStoreStatus] = useState(getStoreStatus);
 
-  const useBackend = true; // Hardcoded true to enforce production mode in children
+  // Derive useBackend from actual connectivity
+  const useBackend = backendOnline;
 
-  // Always fetch from MySQL database on mount
+  // Try backend first, fall back to embedded data
   useEffect(() => {
     async function loadData() {
       try {
         setLoading(true);
-        const [dbItems, dbCategories] = await Promise.all([
-          menuItemsAPI.getAll(),
-          categoriesAPI.getAll()
-        ]);
-        if (dbItems) setMenuItems(dbItems);
-        if (dbCategories) setCategories(dbCategories);
+        setError(null);
+        // Quick health check with 3s timeout
+        const isOnline = await checkServerHealth();
+        setBackendOnline(isOnline);
+
+        if (isOnline) {
+          const [dbItems, dbCategories] = await Promise.all([
+            menuItemsAPI.getAll(),
+            categoriesAPI.getAll()
+          ]);
+          if (dbItems && dbItems.length > 0) setMenuItems(dbItems);
+          else setMenuItems(initialMenuItems);
+          if (dbCategories && dbCategories.length > 0) setCategories(dbCategories);
+          else setCategories(initialCategories);
+        } else {
+          // Backend unreachable — use embedded data
+          console.info('Backend unavailable, using embedded menu data.');
+          setMenuItems(initialMenuItems);
+          setCategories(initialCategories);
+        }
       } catch (err) {
-        console.error('Failed to load menu data:', err);
-        setError('Failed to connect to the database. Please make sure the server is running.');
+        console.warn('API error, falling back to embedded data:', err.message);
+        setMenuItems(initialMenuItems);
+        setCategories(initialCategories);
       } finally {
         setLoading(false);
       }
     }
     loadData();
+  }, []);
+
+  // Update open/closed status every minute
+  useEffect(() => {
+    const timer = setInterval(() => setStoreStatus(getStoreStatus()), 60000);
+    return () => clearInterval(timer);
   }, []);
 
   useEffect(() => {
@@ -233,9 +272,9 @@ export default function App() {
             </span>
           </div>
           <div className="top-bar__right">
-            <span className="top-bar__status">
+            <span className={`top-bar__status ${storeStatus.open ? 'top-bar__status--open' : ''}`}>
               <span className="top-bar__status-dot"></span>
-              WE REOPEN AT 10:00 AM
+              {storeStatus.text}
             </span>
           </div>
         </div>
@@ -311,7 +350,14 @@ export default function App() {
       </header>
 
       <main id="main-content" style={{ marginTop: 'var(--header-height)' }}>
-        {page === 'home' && (
+        {loading && (
+          <div className="page active" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - var(--header-height))', gap: '1.5rem' }}>
+            <div className="loading-spinner"></div>
+            <p style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Loading menu...</p>
+          </div>
+        )}
+
+        {!loading && page === 'home' && (
           <div className="page page--home active">
             <section className="hero">
               <div className="hero__bg-shapes">
@@ -323,7 +369,7 @@ export default function App() {
                 <div className="hero__content">
                   <span className="hero__badge">
                     <span className="hero__badge-dot"></span>
-                    Now Open in Addis Ababa {useBackend && <span style={{ marginLeft: '6px', opacity: 0.8 }}>(Live DB)</span>}
+                    Now Open in Addis Ababa
                   </span>
                   <h1 className="hero__title">
                     Fresh Burgers<br />Made for Every<br />
@@ -408,7 +454,7 @@ export default function App() {
           </div>
         )}
 
-        {page === 'menu' && (
+        {!loading && page === 'menu' && (
           <div className="page page--menu active">
             <div className="menu-page">
               <div className="menu-page__header">
@@ -500,7 +546,7 @@ export default function App() {
           </div>
         )}
 
-        {page === 'contact' && (
+        {!loading && page === 'contact' && (
           <div className="page page--contact active">
              <div className="contact-page">
                 <div className="section__container">
@@ -518,7 +564,7 @@ export default function App() {
                             <ul className="contact__info-list">
                                 <li className="contact__info-item">
                                     <div className="contact__info-icon"><Phone size={18} /></div>
-                                    <span>+251 911 234 567</span>
+                                    <span>+251 11 661 2345 / +251 911 412 345</span>
                                 </li>
                                 <li className="contact__info-item">
                                     <div className="contact__info-icon"><Mail size={18} /></div>
@@ -530,7 +576,7 @@ export default function App() {
                                 </li>
                                 <li className="contact__info-item">
                                     <div className="contact__info-icon"><Clock size={18} /></div>
-                                    <span>Mon - Sun: 10:00 AM - 10:00 PM</span>
+                                    <span>Mon - Sun: 10:00 AM - 11:00 PM</span>
                                 </li>
                             </ul>
                         </div>
@@ -569,7 +615,7 @@ export default function App() {
           </div>
         )}
 
-        {page === 'detail' && detailItem && (
+        {!loading && page === 'detail' && detailItem && (
           <div className="page page--detail active">
             <div className="detail" style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1.25rem' }}>
               <button className="detail__back" onClick={() => showPage('menu')}>
@@ -632,7 +678,7 @@ export default function App() {
           </div>
         )}
 
-        {page === 'admin' && !isAdminAuth && (
+        {!loading && page === 'admin' && !isAdminAuth && (
           <div className="page active" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 'calc(100vh - var(--header-height))', background: 'var(--hero-bg)' }}>
             <div style={{ maxWidth: '420px', width: '100%', padding: '3rem 2.5rem', background: 'var(--surface)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-xl)', border: '1px solid var(--border)' }}>
               <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
@@ -640,7 +686,7 @@ export default function App() {
                   🔒
                 </div>
                 <h2 style={{ fontSize: '1.75rem', fontWeight: '800', color: 'var(--text-strong)', marginBottom: '0.5rem' }}>Staff Portal</h2>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Secure access to menu management (Live DB)</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Secure access to menu management{backendOnline ? ' (Live DB)' : ''}</p>
               </div>
               <form onSubmit={handleAdminLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div>
@@ -659,7 +705,7 @@ export default function App() {
           </div>
         )}
 
-        {page === 'admin' && isAdminAuth && (
+        {!loading && page === 'admin' && isAdminAuth && (
           <div className="page active" style={{ padding: '0' }}>
             <AdminDashboard 
               menuItems={menuItems} setMenuItems={setMenuItems} 
@@ -670,7 +716,7 @@ export default function App() {
           </div>
         )}
 
-        {page === 'favorites' && (
+        {!loading && page === 'favorites' && (
           <div className="page page--favorites active">
             <div className="section__container" style={{ paddingTop: '2rem' }}>
               <h2 className="section__title" style={{ textAlign: 'center', marginBottom: '2rem' }}>Your Favorites</h2>
@@ -720,7 +766,7 @@ export default function App() {
           <span className="bottom-nav__icon">🍔</span>
           <span className="bottom-nav__label">Food</span>
         </button>
-        <button className={`bottom-nav__item ${page === 'menu' && category === 'cat-drinks' ? 'active' : ''}`} onClick={() => { showPage('menu'); setCategory('cat-drinks'); }}>
+        <button className={`bottom-nav__item ${page === 'menu' && categories.find(c => c.id === category)?.name === 'Drinks' ? 'active' : ''}`} onClick={() => { showPage('menu'); const drinksCat = categories.find(c => c.name === 'Drinks'); if (drinksCat) setCategory(drinksCat.id); }}>
           <span className="bottom-nav__icon">🥤</span>
           <span className="bottom-nav__label">Drinks</span>
         </button>
